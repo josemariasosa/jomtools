@@ -4,8 +4,10 @@ Structured documentation generated through my computer programming journey.
 
 ## Content
 
-- [Git](https://www.google.com)
-- [MongoDB](https://www.google.com)
-- [Bash](https://www.google.com)
-- [Python](https://www.google.com)
-- [Javascript](https://www.google.com)
+- [Git](https://github.com/josemariasosa/jomtools/tree/master/git)
+- [MongoDB](https://github.com/josemariasosa/jomtools/tree/master/mongo)
+- [Bash](https://github.com/josemariasosa/jomtools/tree/master/bash)
+- [Python](https://github.com/josemariasosa/jomtools/tree/master/python)
+- [Javascript](https://github.com/josemariasosa/jomtools/tree/master/javascript)
+
+

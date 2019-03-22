@@ -1,9 +1,0 @@
-# Move files from the Digital Ocean Droplet to my local.
-
-scp username@droplet_ip:/path/to/file /path/to/destination
-
-## i.e. scp root@192.241.193.129:/root/strong_arm/_insert_products/dataPool/type_1/gates_2018_10_03.json ./gates_2018_10_03.json 
-
-Running a command on your local computer to upload files to your server is pretty easy on macOS or Linux where you can use scp:
-
-scp -r /path/to/my/files root@:0.0.0.0:/path/on/my/server

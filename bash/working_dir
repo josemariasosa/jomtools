@@ -1,4 +1,0 @@
-# Working with directories.
-
-## Remove all directories with an specific name.
-sudo find . -name "*venv*" -type d > temp; for line in $(cat temp); do rm -rf $line; done

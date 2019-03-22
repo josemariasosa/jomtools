@@ -1,3 +1,0 @@
-crontab -e
-
-0 17 * * 4  cd /root/nps_gen; bash main.sh; cd -
