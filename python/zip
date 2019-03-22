@@ -1,0 +1,18 @@
+from itertools import izip_longest, chain
+
+models = [[('nissan', 'tiida')], [('volkswagen', 'jetta'), ('volkswagen', 'jetta city')]]
+
+args = tuple(models)     
+models = izip_longest(*args)
+models = [tuple(j for j in i if j is not None)for i in models]
+models = list(chain(*models))
+
+print models
+# [('nissan', 'tiida'), ('volkswagen', 'jetta'), ('volkswagen', 'jetta city')]
+
+
+## Passing arguments as a single variable.
+
+Arguments = 1, 2, 3
+SumOf(*Arguments)
+(*) operator will unpack the arguments to multiple parameters.

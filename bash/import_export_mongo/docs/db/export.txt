@@ -1,0 +1,12 @@
+Usage: export [-h <host>] [-d <identifier>]
+Help: Export collection data from the current RIGS databases environments.
+
+Options:
+    -h, --host       <host:staging|production>   Specified from which environment export the data.
+    -d, --db         <name:business>             Database name.
+    -c, --collection <name:user>                 Collection name.
+    -f, --file-path  <path:/User/file.ext>       Path & name of the file. the db backups path [envar $RIGS_DB_BAKS] is appended.
+
+In the future:
+    -e, --file-ext     File type (json|csv).
+        --fields       Columns names divided by colon; ex: --fields col1,col2,col3.

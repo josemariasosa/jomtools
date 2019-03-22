@@ -1,0 +1,129 @@
+#!/bin/bash
+# Author: @noizee
+#
+# Important!
+# - RIGS_DB_BAKS is set as env variable inside ~/.bash_profile
+# - RIGS_BINS_DOCS_PATH is set as env variable inside ~/.bash_profile
+#       *The documentation can be find inside docs/db/
+#
+DATE=$(date +%F)
+VOLUME_PATH=/Users/Noizee
+TAR_FILE_PATH="${VOLUME_PATH}/mongodb-${DATE}.tar.gz"
+BACKUP_SOURCE="${VOLUME_PATH}/mongodb-${BACKUP_HOSTNAME}-${DATE}"
+RESTORE_PATH=/Library/WebServer/Documents/Rigs/bash/restore
+PY_DOWNLOADER=/Library/WebServer/Documents/Rigs/bash/restore/downloader.py
+LOCAL_HOST=localhost
+STAGING_HOST=ec2-54-193-83-156.us-west-1.compute.amazonaws.com:33033
+PRODUCTION_HOST=ec2-54-193-14-48.us-west-1.compute.amazonaws.com:27017
+DB_USER=master
+DB_PASSWORD="eHzbJEmwi5GPNhDESr6KWu1wi"
+
+if [ $# -eq 0 ]
+  then
+    printf "usage: Mongo DB utils commands [-apache command]\n\
+      Options:\n\
+        [-e|--export]  Export a collection data in JSON.
+        [-i|--import]  Import collection data (json file) from one database to another or from file to database.
+        [-r|--restore] Restore the RIGS Database.
+      "
+fi
+
+function get_hostname {
+    local host="$(echo "\$${1}_HOST" | awk '{print toupper($0)}')"
+    echo $(eval echo "${host}")
+}
+
+
+function import_database {
+    if [[ $# -eq 1 ]]; then
+        cat $RIGS_BINS_DOCS_PATH/db/import.txt && exit
+    fi
+
+    while [[ $# -gt 0 ]]
+    do
+    key="$1"
+    case $key in
+        -h|--host) 
+            host=$2
+        shift;;
+        -d|--db) 
+            db=$2 
+        shift;;
+        -c|--collection) 
+            collection=$2 
+        shift;;
+        -f|--file) 
+            file_path=$RIGS_DB_BAKS/$2
+        shift;;
+    esac
+    shift
+    done
+
+    local host=$(get_hostname $host)
+    mongo  $host/$db -u $DB_USER -p $DB_PASSWORD --authenticationDatabase admin --eval "db.${collection}.drop()"
+    result+="$(mongoimport -h $host\
+                           -u $DB_USER\
+                           -p $DB_PASSWORD\
+                           -d $db\
+                           -c $collection\
+                           --file $file_path\
+                           --authenticationDatabase admin)"
+}
+
+function export_collection {
+    if [[ $# -eq 1 ]]; then
+        cat $RIGS_BINS_DOCS_PATH/db/export.txt && exit
+    fi
+    
+    while [[ $# -gt 0 ]]
+    do
+    key="$1"
+    case $key in
+        -h|--host) 
+            local host=$2
+        shift;;
+        -d|--db) 
+            local db=$2
+        shift;;
+        -c|--collection)
+            local collection=$2 
+        shift;;
+        -f|--file-path) 
+            local file_path=$RIGS_DB_BAKS/$2
+        shift;;
+    esac
+    shift
+    done
+
+    echo "Exporting from: ${host}.${db}"
+    echo "To: $file_path"
+    local host=$(get_hostname $host)
+    result="$(mongoexport -h $host\
+                          -u $DB_USER\
+                          -p $DB_PASSWORD\
+                          -d $db\
+                          -c $collection\
+                          -o $file_path\
+                          --authenticationDatabase admin)"
+    subl $file_path
+}
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+case $key in
+    -e|--export)
+        export_collection $@;
+        shift
+    ;;
+    -i|--import)
+        import_database $@;
+        shift
+    ;;
+    -l|--logs)
+        cat /var/log/mongodb/mongod.log
+        shift
+    ;;
+esac
+shift
+done

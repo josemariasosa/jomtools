@@ -1,0 +1,8 @@
+Usage: import [-h <host>] [--db <identifier>]
+Help: Import to database collection the data from a previous exported file.
+
+Options:
+    -h, --host       <host:staging|production>   Specified from which environment export the data.
+    -d, --db         <name:business>             Database name.
+    -c, --collection <name:user>                 Collection name.
+    -f, --file-path  <path:/User/file.ext>       Path & name of the file. the db backups path [envar $RIGS_DB_BAKS] is appended.
