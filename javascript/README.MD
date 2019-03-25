@@ -6,7 +6,7 @@
 
 A Regular Expression, or RegEx, is a pattern used to match character combinations in a string. In JavaScript, regular expressions are also objects. We'll start by giving some basic examples, and then explain the syntax needed to construct and understand RegExes in further detail.
 
-###Creating a Regular Expression
+### Creating a Regular Expression
 
 A regular expression consists of a pattern string and, potentially, a flag specifying further detail on how the pattern should be matched. We construct regular expressions by using regular expression literals or RegExp class objects.
 
@@ -131,15 +131,15 @@ We use the `|` symbol to match one thing or the other. For example, a|b matches 
 
 Regular expressions are used with the **RegExp** methods:
 
-- test
-- exec
+- *test*
+- *exec*
 
 and with the **String** methods:
 
-- match
-- search
-- split
-- replace
+- *match*
+- *search*
+- *split*
+- *replace*
 
 #### The `test` Method
 
