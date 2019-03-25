@@ -10,4 +10,3 @@ Structured documentation generated through my computer programming journey.
 - [Python](https://github.com/josemariasosa/jomtools/tree/master/python)
 - [Javascript](https://github.com/josemariasosa/jomtools/tree/master/javascript)
 
-

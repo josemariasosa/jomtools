@@ -17,52 +17,48 @@ It is useful to have in any server a centralized file with all the credentials. 
 env = staging
 test = True
 notification = True
-s3_key_id = A*********************Q
-s3_secret = V******************************************O
+s3_key_id = A***********************
+s3_secret = A***********************
 s3_bucket = elasticbeanstalk-us-west-1-687111944639
 
 [database local]
 socket = localhost
 port = 27017
 user = master
-password = e******************************i
+password = A***********************
 auth = True
 
 [database development]
 socket = localhost
 port = 27017
 user = master
-password = e******************************i
+password = A***********************
 auth = True
 
 [database staging]
 socket = ec2-54-193-83-156.us-west-1.compute.amazonaws.com
 port = 33033
 user = master
-password = e******************************i
+password = A***********************
 auth = True
 
 [database production]
 socket = ec2-54-193-14-48.us-west-1.compute.amazonaws.com
 port = 27017
 user = master
-password = e******************************i
+password = A***********************
 auth = True
 
 [hooks]
 general = https://hooks.slack.com/services/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
-ops = https://hooks.slack.com/services/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
 business = https://hooks.slack.com/services/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
 developers = https://hooks.slack.com/services/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
 
 [aws]
 default_region = us-west-1
 ses_region = us-east-1
-aws_access_key_id = A***********************A
-aws_secret_access_key = R*************************************q
-
-[userapp]
-max_password_length = 5
+aws_access_key_id = A***********************
+aws_secret_access_key = A***********************
 ```
 
 ## Cron job in a server
@@ -77,10 +73,13 @@ crontab -e
 
 **Warning:** Be careful not to run the later command without the `-e`. This action would delete all your current commands.
 
+For some examples on the cron job scheduling, visit [crontab.guru](https://crontab.guru/).
+
 ### Crontab examples:
 
 ```
 0 17 * * 4  cd /root/nps_gen; bash main.sh; cd -
+0 4 * * *  cd /root/strong_arm/_multi_tools/4_discounts && bash main.sh && cd -
 ```
 
 ## Moving files from a local machine to a remote server
