@@ -2,11 +2,11 @@
 
 [TOC]
 
-## In and Out
+## 1. In and Out I/O
 
-### Importing data to Python using Pandas
+### 1.1 Importing data to Python using Pandas
 
-### Exporting data from Python using Pandas
+### 1.2 Exporting data from Python using Pandas
 
 I. Exporting a Pandas DataFrame as a **JSON** file:
 

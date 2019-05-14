@@ -5,7 +5,7 @@
 ## Shebangs
 
 ```
-#!/bin/bash
+#!/usr/bin/env bash
 ```
 
 ## Config file in a server
