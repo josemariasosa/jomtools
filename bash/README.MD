@@ -8,6 +8,27 @@
 #!/usr/bin/env bash
 ```
 
+## Basic and Fast Commands
+
+### 1. Curl
+
+Get the header of a curl request:
+
+```
+curl -I https://s3-us-west-1.amazonaws.com/rigs-images/multi0.jpg
+
+# HTTP/1.1 200 OK
+# x-amz-id-2: MqWfAIkhfLgvwM5wI6heCR60KhZFEKUNW2/tUaed4rtk5T0FpktwgyFWHuh0RpIFJwUReh0/4PU=
+# x-amz-request-id: BAEC323D42C0B97E
+# Date: Tue, 28 May 2019 15:02:08 GMT
+# Last-Modified: Tue, 28 May 2019 14:51:38 GMT
+# ETag: "28fa12a7b7e55c6049182c502589438a"
+# Accept-Ranges: bytes
+# Content-Type: image/jpeg
+# Content-Length: 819961
+# Server: AmazonS3
+```
+
 ## Config file in a server
 
 It is useful to have in any server a centralized file with all the credentials. For example, in the dataserv the credentials file was located in `~/.rigs/credentials`. The contend of the file looks as follows:
