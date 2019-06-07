@@ -103,9 +103,7 @@ The function that does this is, using Python 2.7:
 
 ## Processing XML files
 
-The class Xml2Json, located in xml2json, 
-
-
+The class Xml2Json, located in [xml2json](https://github.com/josemariasosa/jomtools/blob/master/python/xml/xml2json.py), 
 
 
 
