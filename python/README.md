@@ -9,6 +9,24 @@
 # coding=utf-8
 ```
 
+## Virtual Environment
+
+Automatic generate requirement file with dependensies.
+
+```
+pip freeze > requirements.txt
+```
+
+Create a virtual evironment and install the requirement list.
+
+```
+pip install virtualenv
+
+virtualenv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
 ## Try / Except
 
 Whenever you want to break a **try/except** command in a running script using `cmd + D`, the following scructure must be used, in order to catch the *KeyboardInterrupt*, *SystemExit* errors.
