@@ -1,0 +1,105 @@
+> cat .bash_profile
+export FLASK_ENV='development'
+export APACHE_SERVER=/Library/WebServer/Documents/rigs
+export BACKUP_HOSTNAME=ip-172-31-19-105
+export UBUNTU_ENVIRONMENT=rigs
+export RIGS_DB_BAKS=$APACHE_SERVER/db_baks
+export RIGS_SETTINGS=$HOME/.rigs/credentials
+export RIGS_BINS_DOCS_PATH=$APACHE_SERVER/db_baks/tools_kit/docs
+
+alias srcbash="source ~/.bashrc"
+alias nanobash="nano ~/.bashrc"
+alias sublbash="subl ~/.bashrc"
+alias srcprofile="source ~/.bash_profile"
+alias nanoprofile="nano ~/.bash_profile"
+alias sublprofile="subl ~/.bash_profile"
+alias activateenv="source venv/bin/activate"
+alias gph="git push -u"
+alias gpll="git pull"
+alias gddu="git add -u"
+alias gadd="git add"
+alias gckb="git checkout -b"
+alias gck="git checkout"
+alias gmg="git merge"
+alias gsts="git status"
+alias gbrch="git branch"
+alias gcmm="git commit -m"
+alias glog="git log --pretty=oneline"
+alias gremo="git remote -v"
+alias tcpport="lsof -wni tcp"
+alias myip='dig +short myip.opendns.com @resolver1.opendns.com'
+
+function parse_git_branch {
+  echo -n $(branch_color) && git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/' -e 's/^/ փ /'
+}
+function parse_git_branch_length {
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/' | wc -c
+}
+function parse_pwd_length {
+  pwd|wc -c|tr -d ' '
+}
+function parse_pwd {
+  pwd
+}
+function prompt_command {
+    # get branch string length
+    branchLength=$(parse_git_branch_length)
+    let "branchLength=$branchLength"
+    pwdLength=$(parse_pwd_length)
+    let "pwdLength=$pwdLength"
+    # create a $fill of all screen width minus the time string and a space: AAANNNDDDD git branch
+    let fillsize=${COLUMNS}-11-$branchLength-pwdLength
+    fill=""
+    while [ "$fillsize" -gt "0" ]
+    do
+        fill="-${fill}" # fill with underscores to work on
+        let fillsize=${fillsize}-1
+    done
+}
+PROMPT_COMMAND=prompt_command
+function branch_color {
+    if [[ $(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d') == *master* ]]
+    then
+      echo -e '\033[00m\033[0;31m'
+    else
+      echo -e '\033[00m\033[0;32m'
+    fi
+}
+# Reset color for command output
+# (this one is invoked every time before a command is executed):
+trap 'echo -ne "\033[00m"' DEBUG
+# Git completion
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+    . $(brew --prefix)/etc/bash_completion
+fi
+fill="-"
+reset_style='\[\033[00m\]'
+status_style=$reset_style'\[\033[0;37m\]'
+prompt_style=$reset_style
+command_style=$reset_style'\[\033[0;33m\]'
+# Prompt variable:
+PS1='\n\[\e[0;34m\]$(parse_pwd)'"$status_style"' $fill$(parse_git_branch)'"$status_style"' \t\n'"$prompt_style"'\[\e[1;34m\]>\[\e[m\]'"$command_style "
+capture() {
+    sudo dtrace -p "$1" -qn '
+        syscall::write*:entry
+        /pid == $target && arg0 == 1/ {
+            printf("%s", copyinstr(arg1, arg2));
+        }
+    '
+}
+
+export LSCOLORS=ExFxBxDxCxegedabagacad
+alias ls='ls -GFh'
+alias dataserv='ssh root@192.241.193.129'
+alias opensearch='ssh root@142.93.30.72'
+alias random_music='cd /Users/josemaria/Dropbox/albums_to_have && ls > all_files && sort -R all_files | head -n 10 && rm all_files && cd -'
+
+# Setting PATH for Python 3.7
+# The original version is saved in .bash_profile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/3.7/bin:${PATH}"
+export PATH
+
+# Setting PATH for Python 3.7
+# The original version is saved in .bash_profile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/3.7/bin:${PATH}"
+export PATH

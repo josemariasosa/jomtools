@@ -2,7 +2,50 @@
 
 ## Description:
 
-This is a recopilation of hacks and tricks to move around Mongo DB with ease. 
+This is a recopilation of hacks and tricks to move around Mongo DB with ease.
+
+## Common queries:
+
+This is a list of the most common and useful queries using MongoDB.
+
+### 1. Get duplicated values in a field within different documents.
+
+```
+db.getCollection('articulo').aggregate([
+    {
+        $match: {
+                'marca_refaccion': 'nissan'
+            } 
+    },
+    {
+        $group: {
+                _id: {texto_articulo: '$texto_articulo'},
+                uniqueIds: {$addToSet: '$_id'},
+                count: {$sum: 1}
+            }
+    },
+    {
+        $match: {
+                count: {'$gt': 1}
+            }
+    }
+])
+```
+
+### 2. Query documents containing a list with at least 1 element match.
+
+```
+db.getCollection('articulo').find({
+    attributes: {
+        $elemMatch: {
+            attribute_id: 10,
+            codes: {
+                $in: [3]
+            }
+        }
+    }
+})
+```
 
 ## Mongo APIS:
 
@@ -19,7 +62,7 @@ This is a recopilation of hacks and tricks to move around Mongo DB with ease.
             '$exists': 0
         },
         '_id': {
-        	'$in': product_list
+            '$in': product_list
         }
     }
     projeDB = {
@@ -37,10 +80,10 @@ This is a recopilation of hacks and tricks to move around Mongo DB with ease.
 #### 1.2 aggregate query
     
 ```
-	from bson.son import SON
-	from bson import ObjectId
+    from bson.son import SON
+    from bson import ObjectId
 
-	queryDB = {
+    queryDB = {
         'shopify_id': {
             '$exists': 1
         },
@@ -48,7 +91,7 @@ This is a recopilation of hacks and tricks to move around Mongo DB with ease.
             '$exists': 0
         },
         '_id': {
-        	'$in': [ObjectId(x) for x in product_list]
+            '$in': [ObjectId(x) for x in product_list]
         }
     }
     projeDB = {

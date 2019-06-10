@@ -103,7 +103,27 @@ The function that does this is, using Python 2.7:
 
 ## Processing XML files
 
-The class Xml2Json, located in [xml2json](https://github.com/josemariasosa/jomtools/blob/master/python/xml/xml2json.py), 
+The class **Xml2Json**, located in [xml2json](https://github.com/josemariasosa/jomtools/blob/master/python/xml/xml2json.py), can help us loop trough the Xml keys and extract the attributes and values from them. 
+
+Some code extracted from the class:
+
+```
+    import xml.etree.ElementTree as ET
+
+    tree = ET.parse(file_path)
+    root = tree.getroot()
+
+    for node in root:
+            new_app = {}
+            qual_list = []
+            desc_list = []
+            if node.tag == 'App':
+                for childnode in node:
+                    if childnode.tag in self.id_keys:
+                        _id = childnode.attrib['id']
+                        if _id.isdigit():
+                            new_app[childnode.tag] = int(_id)
+```
 
 
 
