@@ -47,6 +47,62 @@ except:
     _id_to_remove.append(row['product_id'])
 ```
 
+## Regular Expressions
+
+I know it's a good idea to do a little reference about the documentation of this in Python, although, for now, it's more than enough to list some practical examples of the use of `re.match()`, `re.search()`, and some others methods of the **re** library.
+
+### Match
+
+#### Example 1
+
+Taken from the [RE Documentation](https://docs.python.org/2/library/re.html).
+
+```
+import re
+
+m = re.match(r"(\w+) (\w+)", "Isaac Newton, physicist")
+
+m.group(0)       # The entire match
+# 'Isaac Newton'
+
+m.group(1)       # The first parenthesized subgroup.
+'Isaac'
+
+m.group(2)       # The second parenthesized subgroup.
+'Newton'
+
+m.group(1, 2)    # Multiple arguments give us a tuple.
+('Isaac', 'Newton')
+```
+
+#### Example 2
+
+Parsing a url using match. The goal was to extract the string that was at the right position of a given string.
+
+```
+text = '/products/banda-tiempo-cloyes-b281'
+
+m = re.match(r"(.+cloyes)(.+)", text)
+
+m.group(1)
+'/products/banda-tiempo-cloyes'
+
+m.group(2)
+'-b281'
+```
+
+### Search
+
+Search method is way easier. It help us to find if any given expression exists in a string.
+
+```
+if bool(re.search(r'cloyes', s)):
+    print('The expression exists in the string: s')
+
+else:
+    print('The expression does not exist in the string: s')
+```
+
 ## Recursion
 
 ### Recursion examples
