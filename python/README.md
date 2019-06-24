@@ -199,7 +199,111 @@ Some code extracted from the class:
                             new_app[childnode.tag] = int(_id)
 ```
 
+## Input/Output Python IO
 
 
 
+## Classes overview
 
+### 1. Defining a `class` in Python
+
+```
+class Person(object):
+    """Simple class representing a Person"""
+    def __init__(self, name, surname, age):
+        self.name = name
+        self.surname = surname
+        self.age = age
+```
+
+### 2. Property decorator
+
+This decorator `@property` will convert a method into an attribute.
+
+```
+class Person(object):
+    """Simple class representing a Person"""
+    def __init__(self, name, surname, age):
+        self.name = name
+        self.surname = surname
+        self.age = age
+
+    @property
+    def real_age(self):
+        return int(self.age) + 5
+
+def main():
+    person = Person('Jose', 'Sosa', 30)
+
+    print(person.real_age)
+    ## --> 35
+
+if __name__ == '__main__':
+    main()
+```
+
+### 3. Classes Inheritance
+
+Inheritance allows us to define a class that inherits all the methods and properties from another class. **Parent class** is the class being inherited from, also called base class. **Child class** is the class that inherits from another class, also called derived class.
+
+```
+class Product(object):
+    """Simple class representing a Product"""
+    def __init__(self, name, quantity, price):
+        self.name = name
+        self.quantity = quantity
+        self.price = price
+
+    @property
+    def subtotal(self):
+        return float(self.price) * int(self.quantity)
+
+class Vehicle(Product):
+    """Simple class representing a Vehicle"""
+    def __init__(self, name, quantity, price, brand, model):
+        Product.__init__(self, name, quantity, price)
+        self.brand = brand
+        self.model = model
+```
+
+### 4. Special Methods for Classes
+
+#### 4.1 `__str__` Method
+
+We can design the way a class is printed, using the `print` function, or whenever we just call the object. So, to change the print results from: `<__main__.Person object at 0x10e135128>`, to another with a more adequate structure.
+
+```
+class Person(object):
+    """Simple class representing a Person"""
+    def __init__(self, name, surname, age):
+        self.name = name
+        self.surname = surname
+        self.age = age
+
+    def __str__(self):
+        text = '{}\t{}\t{}'
+        text = text.format(self.name,
+                           self.surname,
+                           self.age)
+        return text
+
+    @property
+    def real_age(self):
+        return int(self.age) + 5
+
+class Student(Person):
+    """Simple class representing a Student"""
+    def __init__(self, name, surname, age, course, grade):
+        Person.__init__(self, name, surname, age)
+        self.course = course
+        self.grade = grade
+
+    def __str__(self):
+        text = '{}\t{}\t{}\t{}\t{}'
+        text = text.format(self.name,
+                             self.surname,
+                             self.edad,
+                             self.course,
+                             self.grade)
+        return text
+```
