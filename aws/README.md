@@ -256,3 +256,6 @@ Expected Output:
                u'zipcode': Decimal('90001'),
                u'road': u'1 Jefferson Street'}}]
 ```
+
+Review a real [example here](), using a Lambda Function to query DynamoDB for a Shopify API.
+
