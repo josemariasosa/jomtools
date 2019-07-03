@@ -257,5 +257,5 @@ Expected Output:
                u'road': u'1 Jefferson Street'}}]
 ```
 
-Review a real [example here](), using a Lambda Function to query DynamoDB for a Shopify API.
+Review a real [example here](https://github.com/josemariasosa/jomtools/blob/master/aws/lambda/lambda_function_1.py), using a **Lambda Function** to query DynamoDB for a Shopify API.
 
