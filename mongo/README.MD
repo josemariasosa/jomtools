@@ -10,7 +10,7 @@ This is a list of the most common and useful queries using MongoDB.
 
 ### 1. Get duplicated values in a field within different documents.
 
-```
+```javascript
 db.getCollection('articulo').aggregate([
     {
         $match: {
@@ -34,7 +34,7 @@ db.getCollection('articulo').aggregate([
 
 ### 2. Query documents containing a list with at least 1 element match.
 
-```
+```javascript
 db.getCollection('articulo').find({
     attributes: {
         $elemMatch: {
@@ -53,7 +53,7 @@ db.getCollection('articulo').find({
 
 #### 1.1 find query
 
-```
+```python
     queryDB = {
         'shopify_id': {
             '$exists': 1
@@ -79,7 +79,7 @@ db.getCollection('articulo').find({
 
 #### 1.2 aggregate query
     
-```
+```python
     from bson.son import SON
     from bson import ObjectId
 
@@ -111,4 +111,31 @@ db.getCollection('articulo').find({
 
     return results
 ```
+
+#### 1.3 Move around in the whole collection by batch
+
+```python
+    self.STEP_SIZE = 100000
+    self.length = self.articuloDB.find({}).count()
+
+    steps = range(0, self.length, self.STEP_SIZE)
+        for start in steps:
+            queryDB = {
+                'attributes': {
+                    '$exists': 1
+                }
+            }
+            constDB = {
+                '_id': 0,
+                'clasificacion': 1,
+                'attributes.attribute_id': 1
+            }
+            results = (self.articuloDB.find(queryDB, constDB)
+                                        .skip(start)
+                                        .limit(self.STEP_SIZE))
+            results = list(results)
+            results = pd.DataFrame(results)
+```
+
+
 
