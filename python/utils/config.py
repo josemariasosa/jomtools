@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 AWS_S3 = {
     "URL": "https://s3-us-west-1.amazonaws.com",
-    "ACCESS_KEY": "AKIAJBH3X7QANI37WWJA",
-    "SECRET_KEY": "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",
-    "BUCKET": "rigs-ebay-csv",
+    "ACCESS_KEY": "A************************A",
+    "SECRET_KEY": "j*******************************9",
+    "BUCKET": "my_bucket",
     "PERMISSIONS": {"ACL": "public-read"}
 }
 
@@ -16,9 +16,9 @@ MAIL = {
     "AUTH": False,
     "USERNAME": "",
     "PASSWORD": "",
-    "FROM": "empresa@rigs.com.mx",
+    "FROM": "empresa@ejemplo.com.mx",
 }
 
 SLACK = {
-    "URL": "https://hooks.slack.com/services/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"
+    "URL": "https://hooks.slack.com/services/*****************************w"
 }

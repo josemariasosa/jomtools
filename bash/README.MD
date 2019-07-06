@@ -71,9 +71,9 @@ password = A***********************
 auth = True
 
 [hooks]
-general = https://hooks.slack.com/services/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
-business = https://hooks.slack.com/services/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
-developers = https://hooks.slack.com/services/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
+general = https://hooks.slack.com/services/***********************2
+business = https://hooks.slack.com/services/***********************2
+developers = https://hooks.slack.com/services/***********************2
 
 [aws]
 default_region = us-west-1
