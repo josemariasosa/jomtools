@@ -18,7 +18,7 @@ We generally construct RegEx patterns using the basic characters we wish to matc
 
 A regular expression literal is a RegEx pattern encosed within forward slashes:
 
-```
+```js
 const re = /ab+c/;
 ```
 
@@ -28,7 +28,7 @@ This RegEx above matches the character a, followed by one or more instances of t
 
 We can write a regular expression string and pass it as an argument to the RegExp constructor:
 
-```
+```js
 const re = new RegExp('ab+c');
 ```
 
@@ -36,13 +36,13 @@ const re = new RegExp('ab+c');
 
 To create a RegExp object, we use this syntax:
 
-```
+```js
 new RegExp(pattern[, flags])
 ```
 
 To create a regular expression literal, we use this syntax:
 
-```
+```js
 /pattern/flags
 ```
 
@@ -174,7 +174,7 @@ The `replace(pattern, replacement)` method returns a new string where some (or a
 
 It must match a string that starts and ends with the same vowel (i.e., {a, e, i, o, u}). 
 
-```
+```js
 var re = /^([aeiou]).+\1$/gm;
 ```
 
