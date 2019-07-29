@@ -46,9 +46,6 @@ The *Designer* tab.
 
 Lambda functions can run after any certain event that trigger the function, some examples of such events could be: uploading a file to an s3 bucket.
 
-
-
-
 ## 2. DynamoDB, Boto3 and Python
 
 Please check all the [documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html).
@@ -60,7 +57,7 @@ Before setting up the dynamo object in python, make sure:
 1. Install the configparser dependency in python: `pip install configparser`
 2. Have the credentials file ready. It could be in the following file: `cat ~/.aws/credentials`. Get all the details in the [credentials template](https://github.com/josemariasosa/jomtools/blob/master/bash/setup/credentials_template).
 
-```
+```text
 [dynamo]
 env = staging
 test = True
@@ -79,7 +76,7 @@ dynamo_secret = F*****************************************Q
 
 Perfect! We are ready to set up Get and Post from DynamoDB. Setting up the dynamodb instance:
 
-```
+```python
 import boto3
 from config import dynamo
 
@@ -96,7 +93,7 @@ dynamo_table = dynamodb.Table(table_name)
 
 Generate (POST) items in the database.
 
-```
+```python
 dynamo_table.put_item(
     Item = {
         'Name': 'try2catch',
@@ -110,7 +107,7 @@ dynamo_table.put_item(
 
 Retrieve (GET) items from the database.
 
-```
+```python
 dynamo_table.get_item(
     Key = {
         'Name': 'try2catch'
@@ -120,7 +117,7 @@ dynamo_table.get_item(
 
 During the GET request, in case you obtain this error:
 
-```
+```python
 {
     "errorMessage": "An error occurred (ValidationException) when calling the GetItem operation: The provided key element does not match the schema",
     "errorType": "ClientError"
@@ -139,13 +136,13 @@ For the primary key, you must provide all of the attributes. For example, with a
 
 With the table full of items, you can then query or scan the items in the table using the `DynamoDB.Table.query()` or `DynamoDB.Table.scan()` methods respectively. To add conditions to scanning and querying the table, you will need to import the `boto3.dynamodb.conditions.Key` and `boto3.dynamodb.conditions.Attr` classes. The `boto3.dynamodb.conditions.Key` should be used when the condition is related to the key of the item. The `boto3.dynamodb.conditions.Attr` should be used when the condition is related to an attribute of the item:
 
-```
+```python
 from boto3.dynamodb.conditions import Key, Attr
 ```
 
 This queries for all of the users whose username key equals johndoe:
 
-```
+```python
 response = table.query(
     KeyConditionExpression=Key('username').eq('johndoe')
 )
@@ -155,21 +152,27 @@ print(items)
 
 Expected Output:
 
-```
-[{u'username': u'johndoe',
-  u'first_name': u'John',
-  u'last_name': u'Doe',
-  u'account_type': u'standard_user',
-  u'age': Decimal('25'),
-  u'address': {u'city': u'Los Angeles',
-               u'state': u'CA',
-               u'zipcode': Decimal('90001'),
-               u'road': u'1 Jefferson Street'}}]
+```python
+[
+    {
+        u'username': u'johndoe',
+        u'first_name': u'John',
+        u'last_name': u'Doe',
+        u'account_type': u'standard_user',
+        u'age': Decimal('25'),
+        u'address': {
+            u'city': u'Los Angeles',
+            u'state': u'CA',
+            u'zipcode': Decimal('90001'),
+            u'road': u'1 Jefferson Street'
+        }
+    }
+]
 ```
 
 Similarly you can scan the table based on attributes of the items. For example, this scans for all the users whose age is less than 27:
 
-```
+```python
 response = table.scan(
     FilterExpression=Attr('age').lt(27)
 )
@@ -179,30 +182,40 @@ print(items)
 
 Expected Output:
 
-```
-[{u'username': u'johndoe',
-  u'first_name': u'John',
-  u'last_name': u'Doe',
-  u'account_type': u'standard_user',
-  u'age': Decimal('25'),
-  u'address': {u'city': u'Los Angeles',
-               u'state': u'CA',
-               u'zipcode': Decimal('90001'),
-               u'road': u'1 Jefferson Street'}},
- {u'username': u'bobsmith',
-  u'first_name': u'Bob',
-  u'last_name': u'Smith',
-  u'account_type': u'standard_user',
-  u'age': Decimal('18'),
-  u'address': {u'city': u'Louisville',
-               u'state': u'KY',
-               u'zipcode': Decimal('40213'),
-               u'road': u'3 Madison Lane'}}]
+```python
+[
+    {
+        u'username': u'johndoe',
+        u'first_name': u'John',
+        u'last_name': u'Doe',
+        u'account_type': u'standard_user',
+        u'age': Decimal('25'),
+        u'address': {
+            u'city': u'Los Angeles',
+            u'state': u'CA',
+            u'zipcode': Decimal('90001'),
+            u'road': u'1 Jefferson Street'
+        }
+    },
+    {
+        u'username': u'bobsmith',
+        u'first_name': u'Bob',
+        u'last_name': u'Smith',
+        u'account_type': u'standard_user',
+        u'age': Decimal('18'),
+        u'address': {
+            u'city': u'Louisville',
+            u'state': u'KY',
+            u'zipcode': Decimal('40213'),
+            u'road': u'3 Madison Lane'
+        }
+    }
+]
 ```
 
 You are also able to chain conditions together using the logical operators: **&** (and), **|** (or), and **~** (not). For example, this scans for all users whose first_name starts with J and whose account_type is super_user:
 
-```
+```python
 response = table.scan(
     FilterExpression=Attr('first_name').begins_with('J') & Attr('account_type').eq('super_user')
 )
@@ -212,21 +225,27 @@ print(items)
 
 Expected Output:
 
-```
-[{u'username': u'janedoering',
-  u'first_name': u'Jane',
-  u'last_name': u'Doering',
-  u'account_type': u'super_user',
-  u'age': Decimal('40'),
-  u'address': {u'city': u'Seattle',
-               u'state': u'WA',
-               u'zipcode': Decimal('98109'),
-               u'road': u'2 Washington Avenue'}}]
+```python
+[
+    {
+        u'username': u'janedoering',
+        u'first_name': u'Jane',
+        u'last_name': u'Doering',
+        u'account_type': u'super_user',
+        u'age': Decimal('40'),
+        u'address': {
+            u'city': u'Seattle',
+            u'state': u'WA',
+            u'zipcode': Decimal('98109'),
+            u'road': u'2 Washington Avenue'
+        }
+    }
+]
 ```
 
 You can even scan based on conditions of a nested attribute. For example this scans for all users whose state in their address is CA:
 
-```
+```python
 response = table.scan(
     FilterExpression=Attr('address.state').eq('CA')
 )
@@ -236,25 +255,35 @@ print(items)
 
 Expected Output:
 
-```
-[{u'username': u'johndoe',
-  u'first_name': u'John',
-  u'last_name': u'Doe',
-  u'account_type': u'standard_user',
-  u'age': Decimal('25'),
-  u'address': {u'city': u'Los Angeles',
-               u'state': u'CA',
-               u'zipcode': Decimal('90001'),
-               u'road': u'1 Jefferson Street'}},
- {u'username': u'alicedoe',
-  u'first_name': u'Alice',
-  u'last_name': u'Doe',
-  u'account_type': u'super_user',
-  u'age': Decimal('27'),
-  u'address': {u'city': u'Los Angeles',
-               u'state': u'CA',
-               u'zipcode': Decimal('90001'),
-               u'road': u'1 Jefferson Street'}}]
+```python
+[
+    {
+        u'username': u'johndoe',
+        u'first_name': u'John',
+        u'last_name': u'Doe',
+        u'account_type': u'standard_user',
+        u'age': Decimal('25'),
+        u'address': {
+            u'city': u'Los Angeles',
+            u'state': u'CA',
+            u'zipcode': Decimal('90001'),
+            u'road': u'1 Jefferson Street'
+        }
+    },
+    {
+        u'username': u'alicedoe',
+        u'first_name': u'Alice',
+        u'last_name': u'Doe',
+        u'account_type': u'super_user',
+        u'age': Decimal('27'),
+        u'address': {
+            u'city': u'Los Angeles',
+            u'state': u'CA',
+            u'zipcode': Decimal('90001'),
+            u'road': u'1 Jefferson Street'
+        }
+    }
+]
 ```
 
 Review a real [example here](https://github.com/josemariasosa/jomtools/blob/master/aws/lambda/lambda_function_1.py), using a **Lambda Function** to query DynamoDB for a Shopify API.
