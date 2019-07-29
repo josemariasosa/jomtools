@@ -10,7 +10,7 @@
 
 I. Exporting a Pandas DataFrame as a **JSON** file:
 
-```
+```python
 import json
 
 with open('file_name.csv', 'w') as f:
@@ -20,15 +20,42 @@ with open('file_name.csv', 'w') as f:
 
 II. Exporting a Pandas DataFrame to a **CSV** file:
 
-```
+```python
 dataframe.to_csv("file_name.csv", header=True, encoding='utf-8', index=False)
 ```
 
 III. Appending a Pandas DataFrame to a current **CSV** file:
 
-```
+```python
 with open('file_name.csv', 'a') as f:
 	vehicles.to_csv(f, header=False, encoding='utf-8', index=False)
 ```
 
+## 2. Using Masks
 
+```python
+## Double Mask for Pandas :)
+
+email = [x == row['email'] for x in pending['email']]
+price = [x == row['total_price'] for x in pending['total_price']]
+mask = pd.Series([a and b for a, b in zip(email, price)])
+```
+
+
+## 3. Split a string into two columns.
+
+Using zip.
+
+```python
+from pandas import *
+
+def g_fun(_id):
+
+    """ This function helps parsing the _id into product_id and 
+	vehicle_id.
+    """
+    split_id = _id.split('_')
+    return split_id[0], split_id[1]
+
+data_frame[n1], data_frame[n2] = zip(*data_frame[n3].apply(g_fun))
+```

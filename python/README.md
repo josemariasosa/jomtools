@@ -4,7 +4,7 @@
 
 ## Shebangs and encoding
 
-```
+```python
 #!/usr/bin/env python
 # coding=utf-8
 ```
@@ -13,25 +13,147 @@
 
 Automatic generate requirement file with dependensies.
 
-```
-pip freeze > requirements.txt
+```bash
+$ pip freeze > requirements.txt
 ```
 
 Create a virtual evironment and install the requirement list.
 
-```
-pip install virtualenv
+```bash
+$ pip install virtualenv
 
-virtualenv venv
-source venv/bin/activate
-pip install -r requirements.txt
+$ virtualenv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+```
+
+## Config
+
+A good way to work with the keys and configuration on a server is using the [configparser library](https://docs.python.org/3/library/configparser.html).
+
+```python
+#!/usr/bin/env python
+# coding=utf-8
+
+import os
+import configparser
+from pymongo import MongoClient
+
+_parser = configparser.ConfigParser()
+_parser.read_file(open(os.path.expanduser(os.environ['RIGS_SETTINGS'])))
+
+_general = _parser["general"]
+
+_database = _parser[("database %s" % _general["env"])]
+_mongo_uri = "mongodb://%s:%s@%s:%s" % (_database["user"],
+                                        _database["password"],
+                                        _database["socket"],
+                                        _database["port"])
+
+_mongo_client = MongoClient(_mongo_uri)
+db_rigs = _mongo_client["rigs"]
+```
+
+You can also create multiple attributes on a class using the `setattr` function.
+
+```python
+#!/usr/bin/env python
+# coding=utf-8
+
+import os
+import configparser
+from pymongo import MongoClient
+
+_parser = configparser.ConfigParser()
+_parser.read_file(open(os.path.expanduser(os.environ['_SETTINGS'])))
+
+_general = _parser["general"]
+_environment = _parser["facturbo"]["env"]
+
+_database = _parser[("database %s" % _environment)]
+_mongo_uri = "mongodb://%s:%s@%s:%s" % (_database["user"],
+                                        _database["password"],
+                                        _database["socket"],
+                                        _database["port"])
+
+_config = {
+    "AWS_BUCKET_NAME": "business-invoices",
+    "OFFICE_ZIP_CODE": "44160",
+    "PAYMENT_METHOD": "pue",
+    "FIXED_DECIMALS": "2",
+    "FIXED_CURRENCY": "mxn",
+    "TAX_RATE": 0.16,
+    "TAX_NAME": "iva",
+    "IS_RETENTION": "false",
+    "UNIT": "pieza",
+    "UNIT_CODE": "h87",
+    "PRODUCT_CODE": "25174800",
+    "DEFAULT_DISCOUNT": "0.0",
+    "DEFAULT_NAME_ID": "1",
+    "DEFAULT_CFDI_TYPE": "i",
+    "DEFAULT_INVOICE_TYPE": "g01"
+}
+
+env_config = {
+    "development": {
+        "IS_SANDBOX": True,
+        "API_URL": "https://apisandbox.facturama.mx/cfdi/{}/issued/{}",
+        "API_URL_2": "https://apisandbox.facturama.mx/2/cfdis",
+        "API_CLIENT": "https://apisandbox.facturama.mx/Client",
+        "API_EMAIL": "https://apisandbox.facturama.mx/Cfdi?cfdiType=issued&cfdiId={}&email={}&subject={}&comments={}"
+    },
+    "production": {
+        "IS_SANDBOX": False,
+        "API_URL": "https://www.api.facturama.com.mx/cfdi/{}/issued/{}",
+        "API_URL_2": "https://www.api.facturama.com.mx/2/cfdis",
+        "API_CLIENT": "https://www.api.facturama.com.mx/Client",
+        "API_EMAIL": "https://www.api.facturama.com.mx/Cfdi?cfdiType=issued&cfdiId={}&email={}&subject={}&comments={}"
+    }
+}
+
+_config.update(env_config[_environment])
+
+_mongo_client = MongoClient(_mongo_uri)
+db_rigs = _mongo_client["rigs"]
+db_business = _mongo_client["business"]
+db_ecommerce = _mongo_client["ecommerce"]
+
+```
+
+```python
+# Insert the _config attributes in a Class. ----->
+
+from config import _config, db_business
+
+
+class FileCreator(object):
+
+    """ API GET Request Parameters
+            'https://apisandbox.facturama.mx/cfdi/{pdf|xml|html}/{issued}/{id}'
+    """
+
+    def __init__(self, cfdi_id, order_id):
+
+        # Config attributes.
+        for key in _config:
+            setattr(self, key, _config[key])
+
+        self.slack = Slack()
+        self.cfdi_id = cfdi_id
+        self.order_id = order_id
+        self.date = self.getCurrentDate()
+
+        # Mongo Collections.
+        self.invoiceDB = db_business['invoice']
+
+    # ----------------------------------------------------------
 ```
 
 ## Try / Except
 
 Whenever you want to break a **try/except** command in a running script using `cmd + D`, the following scructure must be used, in order to catch the *KeyboardInterrupt*, *SystemExit* errors.
 
-```
+```python
 try:
     title_success = self.updateTitle(shopify_id, title)
     body_success = self.updateBody(shopify_id, body)
@@ -57,7 +179,7 @@ I know it's a good idea to do a little reference about the documentation of this
 
 Taken from the [RE Documentation](https://docs.python.org/2/library/re.html).
 
-```
+```python
 import re
 
 m = re.match(r"(\w+) (\w+)", "Isaac Newton, physicist")
@@ -79,7 +201,7 @@ m.group(1, 2)    # Multiple arguments give us a tuple.
 
 Parsing a url using match. The goal was to extract the string that was at the right position of a given string.
 
-```
+```python
 text = '/products/banda-tiempo-cloyes-b281'
 
 m = re.match(r"(.+cloyes)(.+)", text)
@@ -95,7 +217,7 @@ m.group(2)
 
 Search method is way easier. It help us to find if any given expression exists in a string.
 
-```
+```python
 if bool(re.search(r'cloyes', s)):
     print('The expression exists in the string: s')
 
@@ -113,8 +235,8 @@ This is a list of scripts that show examples of recursions:
 
 Extract the <'ObjectId'> objects from a nested list with dictionaries. The goal was to change from the nested structure to a much simpler one. Check an example of this issue:
 
-```
-from:
+**From**:
+```python
 [
     {
         "price": None,
@@ -137,42 +259,41 @@ from:
         }
     }
 ]
+```
 
-to:
+**To**:
+```python
 [
     ObjectId('5ac5742f26dc4b07604d6079'),
     ObjectId("59eb5bd43c46f0186c8dfe1c")
 ]
-
 ```
 
 The function that does this is, using Python 2.7:
 
-```
-    def keepOnlyValues(self, l):
+```python
+def keepOnlyValues(self, l):
 
-        def objectify(x):
-            if isinstance(x, str) or isinstance(x, unicode):
-                if len(x) == 24:
-                    x = ObjectId(x)
+    def objectify(x):
+        if isinstance(x, str) or isinstance(x, unicode):
+            if len(x) == 24:
+                x = ObjectId(x)
 
-            if isinstance(x, ObjectId):
-                return x
-            elif isinstance(x, dict):
-                new = x.values()
-                new = [objectify(value) for value in new]
-                while None in new:
-                    new.remove(None)
-                if len(new) > 0:
-                    return new[0]
-            else:
-                return None
+        if isinstance(x, ObjectId):
+            return x
+        elif isinstance(x, dict):
+            new = x.values()
+            new = [objectify(value) for value in new]
+            while None in new:
+                new.remove(None)
+            if len(new) > 0:
+                return new[0]
+        else:
+            return None
 
-        l = [objectify(x) for x in l]
+    l = [objectify(x) for x in l]
 
-        return l
-
-    # --------------------------------------------------------------------------
+    return l
 ```
 
 ## Processing XML files
@@ -181,33 +302,32 @@ The class **Xml2Json**, located in [xml2json](https://github.com/josemariasosa/j
 
 Some code extracted from the class:
 
-```
-    import xml.etree.ElementTree as ET
+```python
+import xml.etree.ElementTree as ET
 
-    tree = ET.parse(file_path)
-    root = tree.getroot()
+tree = ET.parse(file_path)
+root = tree.getroot()
 
-    for node in root:
-            new_app = {}
-            qual_list = []
-            desc_list = []
-            if node.tag == 'App':
-                for childnode in node:
-                    if childnode.tag in self.id_keys:
-                        _id = childnode.attrib['id']
-                        if _id.isdigit():
-                            new_app[childnode.tag] = int(_id)
+for node in root:
+        new_app = {}
+        qual_list = []
+        desc_list = []
+        if node.tag == 'App':
+            for childnode in node:
+                if childnode.tag in self.id_keys:
+                    _id = childnode.attrib['id']
+                    if _id.isdigit():
+                        new_app[childnode.tag] = int(_id)
 ```
 
 ## Input/Output Python IO
-
 
 
 ## Classes overview
 
 ### 1. Defining a `class` in Python
 
-```
+```python
 class Person(object):
     """Simple class representing a Person"""
     def __init__(self, name, surname, age):
@@ -220,7 +340,7 @@ class Person(object):
 
 This decorator `@property` will convert a method into an attribute.
 
-```
+```python
 class Person(object):
     """Simple class representing a Person"""
     def __init__(self, name, surname, age):
@@ -246,7 +366,7 @@ if __name__ == '__main__':
 
 Inheritance allows us to define a class that inherits all the methods and properties from another class. **Parent class** is the class being inherited from, also called base class. **Child class** is the class that inherits from another class, also called derived class.
 
-```
+```python
 class Product(object):
     """Simple class representing a Product"""
     def __init__(self, name, quantity, price):
@@ -272,7 +392,7 @@ class Vehicle(Product):
 
 We can design the way a class is printed, using the `print` function, or whenever we just call the object. So, to change the print results from: `<__main__.Person object at 0x10e135128>`, to another with a more adequate structure.
 
-```
+```python
 class Person(object):
     """Simple class representing a Person"""
     def __init__(self, name, surname, age):
@@ -306,4 +426,27 @@ class Student(Person):
                              self.course,
                              self.grade)
         return text
+```
+
+## zip
+
+```python
+from itertools import izip_longest, chain
+
+models = [[('nissan', 'tiida')], [('volkswagen', 'jetta'), ('volkswagen', 'jetta city')]]
+
+args = tuple(models)     
+models = izip_longest(*args)
+models = [tuple(j for j in i if j is not None)for i in models]
+models = list(chain(*models))
+
+print models
+# [('nissan', 'tiida'), ('volkswagen', 'jetta'), ('volkswagen', 'jetta city')]
+
+
+## Passing arguments as a single variable.
+
+Arguments = 1, 2, 3
+SumOf(*Arguments)
+(*) operator will unpack the arguments to multiple parameters.
 ```
