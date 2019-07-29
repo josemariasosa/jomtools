@@ -4,7 +4,7 @@
 
 ## Shebangs
 
-```
+```bash
 #!/usr/bin/env bash
 ```
 
@@ -14,7 +14,7 @@
 
 Get the header of a curl request:
 
-```
+```bash
 curl -I https://s3-us-west-1.amazonaws.com/rigs-images/multi0.jpg
 
 # HTTP/1.1 200 OK
@@ -29,11 +29,19 @@ curl -I https://s3-us-west-1.amazonaws.com/rigs-images/multi0.jpg
 # Server: AmazonS3
 ```
 
+## Generate some alias
+
+```bash
+export LSCOLORS=ExFxBxDxCxegedabagacad
+alias ls='ls -GFh'
+alias random_music='cd /Users/josemaria/Dropbox/albums_to_have && ls > all_files && sort -R all_files | head -n 10 && rm all_files && cd -'
+```
+
 ## Config file in a server
 
 It is useful to have in any server a centralized file with all the credentials. For example, in the dataserv the credentials file was located in `~/.rigs/credentials`. The contend of the file looks as follows:
 
-```
+```text
 [general]
 env = staging
 test = True
@@ -62,24 +70,6 @@ port = 33033
 user = master
 password = A***********************
 auth = True
-
-[database production]
-socket = ec2-54-193-14-48.us-west-1.compute.amazonaws.com
-port = 27017
-user = master
-password = A***********************
-auth = True
-
-[hooks]
-general = https://hooks.slack.com/services/***********************2
-business = https://hooks.slack.com/services/***********************2
-developers = https://hooks.slack.com/services/***********************2
-
-[aws]
-default_region = us-west-1
-ses_region = us-east-1
-aws_access_key_id = A***********************
-aws_secret_access_key = A***********************
 ```
 
 ## Cron job in a server
@@ -88,7 +78,7 @@ The software utility cron is a time-based job scheduler in Unix-like computer op
 
 To open the current cron jobs in a server use:
 
-```
+```bash
 crontab -e
 ```
 
@@ -98,7 +88,7 @@ For some examples on the cron job scheduling, visit [crontab.guru](https://cront
 
 ### Crontab examples:
 
-```
+```bash
 0 17 * * 4  cd /root/nps_gen; bash main.sh; cd -
 0 4 * * *  cd /root/strong_arm/_multi_tools/4_discounts && bash main.sh && cd -
 ```
@@ -107,19 +97,19 @@ For some examples on the cron job scheduling, visit [crontab.guru](https://cront
 
 `scp` allows files to be copied to, from, or between different hosts. It uses ssh for data transfer and provides the same authentication and same level of security as ssh. One application of this command is to move files from a Digital Ocean Droplet to my local machine.
 
-```
+```bash
 scp username@droplet_ip:/path/to/file /path/to/destination
 ```
 
 Running a command on your local computer to upload files to your server is pretty easy on macOS or Linux where you can use scp:
 
-```
+```bash
 scp -r /path/to/my/files root@:0.0.0.0:/path/on/my/server
 ```
 
 ### SCP examples:
 
-```
+```bash
 scp root@192.241.193.129:/root/strong_arm/_insert_products/dataPool/type_1/gates_2018_10_03.json ./gates_2018_10_03.json 
 ```
 
@@ -129,7 +119,7 @@ scp root@192.241.193.129:/root/strong_arm/_insert_products/dataPool/type_1/gates
 
 In this first example, the requirement was to eliminate all the files within multiple directories having the same name `venv`, within a root directory.
 
-```
+```bash
 sudo find . -name "*venv*" -type d > temp; for line in $(cat temp); do rm -rf $line; done
 ```
 
