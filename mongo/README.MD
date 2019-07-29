@@ -4,6 +4,20 @@
 
 This is a recopilation of hacks and tricks to move around Mongo DB with ease.
 
+## Admin commands:
+
+### 1. Create an admin user.
+
+```js
+use admin
+db.createUser({
+    user: "master",
+    pwd: "e******************i",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" }, "readWriteAnyDatabase" ],
+    passwordDigestor: "server"
+})
+```
+
 ## Common queries:
 
 This is a list of the most common and useful queries using MongoDB.
@@ -47,6 +61,23 @@ db.getCollection('articulo').find({
 })
 ```
 
+### 3. Query duplicated fields in a collection.
+
+```js
+db.getCollection('attribute_code').aggregate([
+  {"$match":{attribute_id: 19999}},
+  {"$project": {
+      "label":1,
+      "label_en":1,
+      "aEq": {"$eq":["$label","$label_en"]}
+    }
+  },
+  {"$match":{"aEq": true}}
+])
+
+db.getCollection('attribute_code').find({$where: "this.label == this.label_en", attribute_id: 19999 }).sort({code: 1})
+```
+
 ## Mongo APIS:
 
 ### 1 - pyMongo Python Client
@@ -54,87 +85,87 @@ db.getCollection('articulo').find({
 #### 1.1 find query
 
 ```python
-    queryDB = {
-        'shopify_id': {
-            '$exists': 1
-        },
-        'price_last_update': {
-            '$exists': 0
-        },
-        '_id': {
-            '$in': product_list
-        }
+queryDB = {
+    'shopify_id': {
+        '$exists': 1
+    },
+    'price_last_update': {
+        '$exists': 0
+    },
+    '_id': {
+        '$in': product_list
     }
-    projeDB = {
-        '_id': 0,
-        'product_id': 1,
-        'shopify_id': 1
-    }
-    results = self.stagingDB.find(queryDB, projeDB).limit(self.BATCH_SIZE)
-    results = list(results)
-    results = pd.DataFrame(results)
+}
+projeDB = {
+    '_id': 0,
+    'product_id': 1,
+    'shopify_id': 1
+}
+results = self.stagingDB.find(queryDB, projeDB).limit(self.BATCH_SIZE)
+results = list(results)
+results = pd.DataFrame(results)
 
-    return results
+return results
 ```
 
 #### 1.2 aggregate query
     
 ```python
-    from bson.son import SON
-    from bson import ObjectId
+from bson.son import SON
+from bson import ObjectId
 
-    queryDB = {
-        'shopify_id': {
-            '$exists': 1
-        },
-        'price_last_update': {
-            '$exists': 0
-        },
-        '_id': {
-            '$in': [ObjectId(x) for x in product_list]
-        }
+queryDB = {
+    'shopify_id': {
+        '$exists': 1
+    },
+    'price_last_update': {
+        '$exists': 0
+    },
+    '_id': {
+        '$in': [ObjectId(x) for x in product_list]
     }
-    projeDB = {
-        '_id': 0,
-        'product_id': 1,
-        'shopify_id': 1
-    }
-    aggreDB = [
-        { "$match" : queryDB },
-        { "$project" : projeDB },
-        { "$sort" : SON([("price_last_update", 1)]) },
-        { "$limit" : self.BATCH_SIZE }
-    ]
-    results = self.stagingDB.aggregate(aggreDB)
-    results = list(results)
-    results = pd.DataFrame(results)
+}
+projeDB = {
+    '_id': 0,
+    'product_id': 1,
+    'shopify_id': 1
+}
+aggreDB = [
+    { "$match" : queryDB },
+    { "$project" : projeDB },
+    { "$sort" : SON([("price_last_update", 1)]) },
+    { "$limit" : self.BATCH_SIZE }
+]
+results = self.stagingDB.aggregate(aggreDB)
+results = list(results)
+results = pd.DataFrame(results)
 
-    return results
+return results
 ```
 
 #### 1.3 Move around in the whole collection by batch
 
 ```python
-    self.STEP_SIZE = 100000
-    self.length = self.articuloDB.find({}).count()
+self.STEP_SIZE = 100000
+self.length = self.articuloDB.find({}).count()
 
-    steps = range(0, self.length, self.STEP_SIZE)
-        for start in steps:
-            queryDB = {
-                'attributes': {
-                    '$exists': 1
-                }
+steps = range(0, self.length, self.STEP_SIZE)
+    for start in steps:
+        queryDB = {
+            'attributes': {
+                '$exists': 1
             }
-            constDB = {
-                '_id': 0,
-                'clasificacion': 1,
-                'attributes.attribute_id': 1
-            }
-            results = (self.articuloDB.find(queryDB, constDB)
-                                        .skip(start)
-                                        .limit(self.STEP_SIZE))
-            results = list(results)
-            results = pd.DataFrame(results)
+        }
+        constDB = {
+            '_id': 0,
+            'clasificacion': 1,
+            'attributes.attribute_id': 1
+        }
+        results = (self.articuloDB.find(queryDB, constDB)
+                                    .skip(start)
+                                    .limit(self.STEP_SIZE))
+        results = list(results)
+        results = pd.DataFrame(results)
 ```
 
 
