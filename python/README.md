@@ -2,6 +2,21 @@
 
 [TOC]
 
+## Python setup
+
+### Install Python
+
+Download the lastest version of Python from the [official website](https://www.python.org).
+
+### Install Pip on MacOS
+
+Install pip on MacOS, using easy_install command and upgrade pip to the latest version:
+
+```bash
+$ sudo easy_install pip
+$ sudo pip install --upgrade pip
+```
+
 ## Shebangs and encoding
 
 ```python

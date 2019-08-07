@@ -13,4 +13,3 @@ Structured documentation generated through my computer programming journey.
 - [MongoDB](https://github.com/josemariasosa/jomtools/tree/master/mongo)
 - [Python](https://github.com/josemariasosa/jomtools/tree/master/python)
 	- [Pandas](https://github.com/josemariasosa/jomtools/tree/master/python/pandas)
-
