@@ -29,7 +29,45 @@ curl -I https://s3-us-west-1.amazonaws.com/rigs-images/multi0.jpg
 # Server: AmazonS3
 ```
 
-## Create a symlink
+## How to Create and Use Symbolic Links
+
+More on this topic, refer [this article](https://www.howtogeek.com/297721/how-to-create-and-use-symbolic-links-aka-symlinks-on-a-mac/).
+
+Symbolic links, also known as symlinks, are special files that point to files or directories in other locations on your system. You can think of them like advanced aliases and here’s how to use them in MacOS.
+
+Symbolic links are similar to aliases, except they work in every application on your Mac—including in the Terminal.
+
+### Create Symbolic Links
+
+Run the `ln` command in the following form. You can specify either a path to a directory or file:
+
+```bash
+ln -s /path/to/original /path/to/link
+```
+
+The -s here tells the ln command to create a symbolic link. If you want to create a hard link, you’d omit the -s. Most of the time symbolic links are the better choice, so don’t create a hard link unless you have a specific reason for doing so.
+
+If your file path contains spaces or other special characters, you’ll need to enclose it in quotation marks. So, if you wanted to create a link on your desktop to a folder named “My Files” inside your user directory, you’d need something like the following command:
+
+```bash
+ln -s "/Users/name/My Files" "/Users/name/Desktop/My Link"
+```
+
+If you need to create a symbolic link in a system location your user account doesn’t have access to, you’ll need to prefix the ln command with the sudo command, like so:
+
+```bash
+sudo ln -s /path/to/original /path/to/link
+```
+
+### Delete Symbolic Links
+
+You can delete symbolic links like you would any other type of file. For example, to delete a symbolic link in Finder, `Ctrl+click` or right-click it and select “Move to Trash”.
+
+You can delete links from the command line using the `rm` command, which is the same command you’d use to remove other files. Run the command and specify the path to the link you want to delete:
+
+```bash
+rm /path/to/link
+```
 
 ## Generate some alias
 
