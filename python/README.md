@@ -17,6 +17,23 @@ $ sudo easy_install pip
 $ sudo pip install --upgrade pip
 ```
 
+## PEP 8
+
+This will only list some of the most important points from the most popular Style Guide for Python (AKA [PEP 8](https://www.python.org/dev/peps/pep-0008/)).
+
+- **Indentation** - Use 4 spaces per indentation level.
+- **Tabs or Spaces?** - Spaces are the preferred indentation method.
+- **Maximum Line Length** - Limit all lines to a maximum of 79 characters.
+- **Blank Lines** - Surround top-level function and class definitions with two blank lines. Method definitions inside a class are surrounded by a single blank line.
+- **Source File Encoding** - Code in the core Python distribution should always use UTF-8 (or ASCII in Python 2). Files using ASCII (in Python 2) or UTF-8 (in Python 3) should not have an encoding declaration.
+- **Imports** - Imports should usually be on separate lines.
+- **Most Importan Naming Conventions**:
+    - **regular_variables**: variable names should be lowercase, where necessary separating words by underscores.
+    - **CONSTANTS**: to indicate that a variable should be treated as if it were a constant, names should be uppercase, where necessary separating words by underscores.
+    - **function_names()**: names of functions and class methods should be lowercase, where necessary separating words by underscores.
+    - **ClassNames**: class names should capitalize the first letter of each word.
+    - **FactoryFunctionNames()**: factory functions return objects. Therefore, to users of your code, factory functions act like class definitions. To reflect this, factory function names should also capitalize the first letter of each word.
+
 ## Shebangs and encoding
 
 ```python
