@@ -26,7 +26,7 @@ open /Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl
 
 The used command should open up the editor when you type it into the Terminal. If that worked, you're good to go.
 
-Now, you need to create a symlink called `sublime` which links the subl CLI to a folder where your system usually looks to execute these binaries. For further information about symlinks, go to the [Bash Documentation](https://github.com/josemariasosa/jomtools/tree/master/bash#how-to-create-and-use-symbolic-links). To do this, type in:
+Now, you need to create a symlink called `sublime` which links the subl CLI to a folder where your system usually looks to execute these binaries. For further information about **symlinks**, go to the [Bash Documentation](https://github.com/josemariasosa/jomtools/tree/master/bash#how-to-create-and-use-symbolic-links). To do this, type in:
 
 For **Sublime Text 2**:
 
