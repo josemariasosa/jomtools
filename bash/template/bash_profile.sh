@@ -1,34 +1,4 @@
-> cat .bash_profile
-export FLASK_ENV='development'
-export APACHE_SERVER=/Library/WebServer/Documents/rigs
-export BACKUP_HOSTNAME=ip-172-31-19-105
-export UBUNTU_ENVIRONMENT=rigs
-export RIGS_DB_BAKS=$APACHE_SERVER/db_baks
-export RIGS_SETTINGS=$HOME/.rigs/credentials
-export RIGS_BINS_DOCS_PATH=$APACHE_SERVER/db_baks/tools_kit/docs
-
-alias srcbash="source ~/.bashrc"
-alias nanobash="nano ~/.bashrc"
-alias sublbash="subl ~/.bashrc"
-alias srcprofile="source ~/.bash_profile"
-alias nanoprofile="nano ~/.bash_profile"
-alias sublprofile="subl ~/.bash_profile"
-alias activateenv="source venv/bin/activate"
-alias gph="git push -u"
-alias gpll="git pull"
-alias gddu="git add -u"
-alias gadd="git add"
-alias gckb="git checkout -b"
-alias gck="git checkout"
-alias gmg="git merge"
-alias gsts="git status"
-alias gbrch="git branch"
-alias gcmm="git commit -m"
-alias glog="git log --pretty=oneline"
-alias gremo="git remote -v"
-alias tcpport="lsof -wni tcp"
-alias myip='dig +short myip.opendns.com @resolver1.opendns.com'
-
+# Setting Visual Git Branch
 function parse_git_branch {
   echo -n $(branch_color) && git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/' -e 's/^/ փ /'
 }
@@ -88,15 +58,12 @@ capture() {
     '
 }
 
+# Setting LS colors
 export LSCOLORS=ExFxBxDxCxegedabagacad
 alias ls='ls -GFh'
-alias dataserv='ssh root@192.241.193.129'
-alias opensearch='ssh root@142.93.30.72'
-alias random_music='cd /Users/josemaria/Dropbox/albums_to_have && ls > all_files && sort -R all_files | head -n 10 && rm all_files && cd -'
 
-# Setting PATH for Python 3.7
-# The original version is saved in .bash_profile.pysave
-PATH="/Library/Frameworks/Python.framework/Versions/3.7/bin:${PATH}"
+# Setting PATH for Sublime 3
+export PATH=/usr/local/bin:$PATH
 export PATH
 
 # Setting PATH for Python 3.7

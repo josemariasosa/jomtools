@@ -29,6 +29,8 @@ curl -I https://s3-us-west-1.amazonaws.com/rigs-images/multi0.jpg
 # Server: AmazonS3
 ```
 
+## Create a symlink
+
 ## Generate some alias
 
 ```bash
