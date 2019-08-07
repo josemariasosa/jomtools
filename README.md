@@ -9,7 +9,6 @@ Structured documentation generated through my computer programming journey.
 - [Git](https://github.com/josemariasosa/jomtools/tree/master/git)
 - [IDE](https://github.com/josemariasosa/jomtools/tree/master/ide)
 	- [Sublime](https://github.com/josemariasosa/jomtools/tree/master/ide/sublime)
-
 - [Javascript](https://github.com/josemariasosa/jomtools/tree/master/javascript)
 - [MongoDB](https://github.com/josemariasosa/jomtools/tree/master/mongo)
 - [Python](https://github.com/josemariasosa/jomtools/tree/master/python)
