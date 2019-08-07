@@ -69,6 +69,121 @@ You can delete links from the command line using the `rm` command, which is the 
 rm /path/to/link
 ```
 
+## Homebrew
+
+### Install Homebrew
+
+The missing package manager for macOS (or Linux) — [Homebrew](https://brew.sh/).
+
+```bash
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+## Install the `tree` command for Mac
+
+```bash
+brew install tree
+```
+
+Print the folder and file structure with tree.
+
+```bash
+> tree .
+.
+├── README.md
+├── aws
+│   ├── README.md
+│   └── lambda
+│       └── lambda_function_1.py
+├── bash
+│   ├── README.MD
+│   ├── template
+│   │   ├── bash_profile.sh
+│   │   └── credentials.txt
+│   └── tools
+│       ├── flask
+│       │   └── create_app
+│       │       └── app.sh
+│       └── mirefaccion
+│           └── import_export_mongo
+│               ├── README.md
+│               ├── db
+│               └── docs
+│                   └── db
+│                       ├── export.txt
+│                       └── import.txt
+├── git
+│   ├── README.md
+│   └── template
+│       └── gitignore.txt
+├── ide
+│   └── sublime
+│       └── README.md
+├── javascript
+│   └── README.MD
+├── mongo
+│   └── README.MD
+└── python
+    ├── README.md
+    ├── exercises
+    │   ├── 1-grocery-list-price.py
+    │   └── 2-grocery-list-price-stock.py
+    ├── pandas
+    │   └── README.MD
+    ├── utils
+    │   ├── __init__.py
+    │   ├── aws
+    │   │   ├── __init__.py
+    │   │   └── s3.py
+    │   ├── config.py
+    │   ├── mail.py
+    │   └── slack.py
+    └── xml
+        └── xml2json.py
+
+23 directories, 27 files
+```
+
+Removing a folder from a tree command. For example, avoiding the venv to be printed.
+
+```bash
+> tree -I venv
+.
+├── config
+│   ├── __pycache__
+│   │   └── selection.cpython-37.pyc
+│   └── selection.py
+├── core
+│   ├── __pycache__
+│   │   ├── calculus.cpython-37.pyc
+│   │   ├── generator.cpython-37.pyc
+│   │   └── runners.cpython-37.pyc
+│   ├── calculus.py
+│   ├── generator.py
+│   └── runners.py
+├── db
+│   ├── __pycache__
+│   │   ├── businessunit.cpython-37.pyc
+│   │   ├── connection.cpython-37.pyc
+│   │   ├── organization.cpython-37.pyc
+│   │   ├── revs.cpython-37.pyc
+│   │   └── site.cpython-37.pyc
+│   ├── businessunit.py
+│   ├── connection.py
+│   ├── organization.py
+│   ├── revs.py
+│   └── site.py
+├── helper
+│   ├── __pycache__
+│   │   ├── counter.cpython-37.pyc
+│   │   └── z.cpython-37.pyc
+│   ├── counter.py
+│   └── z.py
+└── main.py
+
+8 directories, 23 files
+```
+
 ## Generate some alias
 
 ```bash

@@ -59,6 +59,16 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
+Create a new virtual environment inside the directory:
+
+```bash
+# Python 2:
+$ virtualenv env
+
+# Python 3
+$ python3 -m venv env
+```
+
 ## Config
 
 A good way to work with the keys and configuration on a server is using the [configparser library](https://docs.python.org/3/library/configparser.html).
