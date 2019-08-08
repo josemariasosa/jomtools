@@ -73,3 +73,33 @@ $ git remote -v
 $ git remote remove origin
 $ git remote add origin git@bitbucket.org:rigsteam/comments_sanitizer.git
 ```
+
+## 3. Ignore files that have already been committed to a Git repository [duplicate]
+
+Information taken from [this post in Stackoverflow](https://stackoverflow.com/questions/1139762/ignore-files-that-have-already-been-committed-to-a-git-repository).
+
+To untrack a *single* file that has already been added/initialized to your repository, i.e., stop tracking the file but not delete it from your system use: `git rm --cached filename`
+
+To untrack *every* file that is now in your `.gitignore`:
+
+**First commit any outstanding code changes**, and then, run this command:
+
+```bash
+git rm -r --cached .
+```
+
+This removes any changed files from the index(staging area), then just run:
+
+```bash
+git add .
+```
+
+Commit it:
+
+```bash
+git commit -m ".gitignore is now working"
+```
+
+To undo `git rm --cached filename`, use git add filename.
+
+Make sure to commit all your important changes before running `git add .` Otherwise, you will lose any changes to other files.
