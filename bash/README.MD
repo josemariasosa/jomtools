@@ -278,3 +278,20 @@ In this first example, the requirement was to eliminate all the files within mul
 sudo find . -name "*venv*" -type d > temp; for line in $(cat temp); do rm -rf $line; done
 ```
 
+### 2. Check if a directory exists
+
+To check if a directory exists in a shell script you can use the following:
+
+```bash
+if [ -d "$DIRECTORY" ]; then
+  # Control will enter here if $DIRECTORY exists.
+fi
+```
+
+Or to check if a directory doesn't exist:
+
+```bash
+if [ ! -d "$DIRECTORY" ]; then
+  # Control will enter here if $DIRECTORY doesn't exist.
+fi
+```

@@ -1,3 +1,7 @@
+# Global Variables
+export REVER_SETTINGS=$HOME/.rever/credentials
+alias deply='/Users/josemaria/Maria/Repositories/jomtools/python/tools/deply/deply.sh'
+
 # Setting Visual Git Branch
 function parse_git_branch {
   echo -n $(branch_color) && git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/' -e 's/^/ փ /'
