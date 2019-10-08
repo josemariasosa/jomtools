@@ -107,12 +107,3 @@ venv.bak/
 .DS_Store
 
 # End of https://www.gitignore.io/api/python
-
-# Credentials
-mongoCredentials.py
-
-# Vehicle with no match list.
-_transformer/dataPool/vehicle/*.csv
-
-# OEM product csv/json
-_original/dataPool/legacy/*

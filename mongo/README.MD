@@ -168,5 +168,9 @@ steps = range(0, self.length, self.STEP_SIZE)
         results = pd.DataFrame(results)
 ```
 
+#### 1.4 Querying Mongodb in case-insensitive
 
+```python
+db.stuff.find_one({'name': re.compile(username, re.IGNORECASE)})
+```
 

@@ -4,6 +4,7 @@ PROJECT_NAME=$1;
 PROJECT_LOC=$PWD"/"$PROJECT_NAME
 CONFIG_FILE="/Users/josemaria/Maria/Rever/templates/config.py"
 BASH_MAIN="/Users/josemaria/Maria/Rever/templates/main.sh"
+PY_MAIN="/Users/josemaria/Maria/Rever/templates/main.py"
 
 if [ ! -d "$PROJECT_LOC" ]; then
     echo "Creating new python3 project in location:"
@@ -18,15 +19,16 @@ if [ ! -d "$PROJECT_LOC" ]; then
     source venv/bin/activate
     pip install --upgrade pip
     pip install pymongo pandas configparser
+    pip install git+https://github.com/josemariasosa/rubik
     deactivate
     cp $BASH_MAIN ./main.sh
     
     cd ./pyFiles
     cp $CONFIG_FILE ./config.py
-    curl https://raw.githubusercontent.com/josemariasosa/rubik/master/rubik/rubik.py > rubik.py
-    touch main.py
+    cp $PY_MAIN ./main.py
 
     cd ../
+    # curl https://raw.githubusercontent.com/josemariasosa/jomtools/master/git/template/gitignore.txt > .gitignore
     sublime .
 
     echo "Done!"
