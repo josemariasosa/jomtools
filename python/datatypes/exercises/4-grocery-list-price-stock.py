@@ -2,10 +2,13 @@
 # coding=utf-8
 
 """
-EN:
+EN: Generate a script in which the user give a product name and a quantity
+for that product as an input. Then the output must be the combination of
+stores that minimize the expenses.
+
 ES: Hacer un programa al cual el usuario indique un producto y una cantidad.
-    El programa debe responder el costo de la mejor combinación de compra.
-    Presentar cuántos productos de una tienda y de otra se deben comprar.
+El programa debe responder el costo de la mejor combinación de compra.
+Presentar cuántos productos de una tienda y de otra se deben comprar.
 
     prices_store_1 = {
         "banana": 4,
@@ -13,8 +16,6 @@ ES: Hacer un programa al cual el usuario indique un producto y una cantidad.
         "orange": 1.5,
         "pear": 3
     }
-
-
 
     prices_store_2 = {
         "banana": 6,
@@ -24,6 +25,20 @@ ES: Hacer un programa al cual el usuario indique un producto y una cantidad.
         "tomato": 1
     }
 
+    stock_store_1 = {
+        "banana": 1,
+        "apple": 30,
+        "orange": 3,
+        "pear": 1
+    }
+
+    stock_store2 = {
+        "banana": 10,
+        "apple": 1,
+        "orange": 1,
+        "pear": 3,
+        "tomato": 0
+    }
 """
 # ------------------------------------------------------------------------------
 

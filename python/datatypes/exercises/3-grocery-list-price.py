@@ -2,10 +2,12 @@
 # coding=utf-8
 
 """
-EN:
+EN: Generate a script in which the user define a single product he is looking
+for, and the answer present in which store that product is cheaper.
+
 ES: Hacer un programa al cual el usuario indique el producto que está buscando
-    y el programa nos responda en cuál de las dos tiendas podemos localizarlo
-    más barado.
+y el programa nos responda en cuál de las dos tiendas podemos localizarlo más 
+barado.
 
     prices_store_1 = {
         "banana": 4,
@@ -14,8 +16,6 @@ ES: Hacer un programa al cual el usuario indique el producto que está buscando
         "pear": 3
     }
 
-
-
     prices_store_2 = {
         "banana": 6,
         "apple": 1.5,
@@ -23,7 +23,6 @@ ES: Hacer un programa al cual el usuario indique el producto que está buscando
         "pear": 3,
         "tomato": 1
     }
-
 """
 # ------------------------------------------------------------------------------
 

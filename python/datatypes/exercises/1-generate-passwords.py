@@ -2,11 +2,15 @@
 # coding=utf-8
 
 """
-EN:
-ES: El script deberá de crear e imprimir una lista de n claves, de longitud m, 
-    incluyendo, al menos, uan minúscula, una mayúscula y un dígito.
-    Los valores de n y m serán solicitados al usuario y m deberá tener el
-    valor de 8 en caso de que el usuario no proporcione ninguno.
+EN: Generate a script capable of creating and printing a list of N passwords, of
+M length, including, at least, one lowercase and one uppercase letter as well
+as a numerical digit. The values N and M will be a user input, in case the user
+provide an invalid length, the default value for M will be 8.
+
+ES: El script deberá de crear e imprimir una lista de N claves, de longitud M,
+incluyendo, al menos, una minúscula, una mayúscula y un dígito. Los valores de 
+N y M serán solicitados al usuario y m deberá tener el valor de 8 en caso de 
+que el usuario no proporcione ninguno.
 """
 # ------------------------------------------------------------------------------
 
