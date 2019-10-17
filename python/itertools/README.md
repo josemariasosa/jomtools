@@ -2,6 +2,8 @@
 
 ## 1. Generate combinations out of a list.
 
+https://docs.python.org/3/library/itertools.html#itertools.combinations
+
 ```python
 l = [1, 2, 3, 4]
 size = 2
