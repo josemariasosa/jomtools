@@ -273,7 +273,7 @@ else:
 
 This is a list of scripts that show examples of recursions:
 
-#### Example 1. 
+#### Example 1.
 
 Extract the <'ObjectId'> objects from a nested list with dictionaries. The goal was to change from the nested structure to a much simpler one. Check an example of this issue:
 
@@ -337,6 +337,83 @@ def keepOnlyValues(self, l):
 
     return l
 ```
+
+### Example 2. Get all the nested keys from an object
+
+Using recurssion.
+
+```json
+// For 
+{
+    "_id": 1,
+    "user": {
+        "name": "jose",
+        "surname": "sosa",
+        "email": "josemariasosa@github.com"
+    },
+    "modules": {
+        "data": {
+            "basic": 100,
+            "advanced": 90
+        },
+        "programming": {
+            "basic": 80,
+            "advanced": 85
+        }
+    }
+}
+
+// To
+{
+    "_id": 1,
+    "user.name": "jose",
+    "user.surname": "sosa",
+    "user.email": "josemariasosa@github.com",
+    "modules.data.basic": 100,
+    "modules.data.advanced": 90,
+    "modules.programming.basic": 80,
+    "modules.programming.advanced": 85
+}
+```
+
+```python
+def get_new_keys(self, v):
+        all_keys = []
+        for k, v in v.items():
+            if isinstance(v, dict):
+                new_keys = self.get_new_keys(v)
+                new_keys = [k + '.' + x for x in new_keys]
+                all_keys.extend(new_keys)
+            else:
+                all_keys.append(k)
+        return all_keys
+
+    def ___get_fields(self, results):
+        fields = []
+        for doc in results:
+            date = False
+            keys = []
+            for k, v in doc.items():
+                if k == '_id':
+                    date = v.generation_time
+                else:
+                    if isinstance(v, dict):
+                        new_keys = self.get_new_keys(v)
+                        new_keys = [k + '.' + x for x in new_keys]
+                        keys.extend(new_keys)
+                    else:
+                        keys.append(k)
+            fields.append({
+                'date': date,
+                'keys': keys
+            })
+        return fields
+```
+
+
+
+
+---
 
 ## Processing XML files
 
