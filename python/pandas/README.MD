@@ -59,3 +59,35 @@ def g_fun(_id):
 
 data_frame[n1], data_frame[n2] = zip(*data_frame[n3].apply(g_fun))
 ```
+
+## pivot table
+
+### From two columns with factors
+
+| user_id | movie_title                   | rating |
+|---------|-------------------------------|--------|
+| 1       | 'Round Midnight (1986)        | 3      |
+| 3       | 'Round Midnight (1986)        | 1      |
+| 1       | 'burbs, The (1989)            | 2      |
+| 3       | 'burbs, The (1989)            | 3      |
+| 1       | 'night Mother (1986)          | 5      |
+| 5       | 'night Mother (1986)          | 4      |
+| 2       | ...And Justice for All (1979) | 3      |
+| 3       | ...And Justice for All (1979) | 2      |
+| 5       | ...And Justice for All (1979) | 3      |
+
+```python
+movie_matrix = movies.pivot_table(index='UserID',
+                                      columns='Title',
+                                      values='Rating')
+```
+
+From this table to
+
+| user_id | 'Round Midnight (1986) | 'burbs, The (1989) | 'night Mother (1986) | ...And Justice for All (1979) |
+|---------|------------------------|--------------------|----------------------|-------------------------------|
+| 1       | 3                      | 2                  | 5                    |                               |
+| 2       |                        |                    |                      | 3                             |
+| 3       | 1                      | 3                  |                      | 2                             |
+| 5       |                        |                    | 4                    | 3                             |
+
