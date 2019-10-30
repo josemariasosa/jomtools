@@ -97,4 +97,3 @@ pl.title('Mean')
 pl.xlabel("value")
 pl.ylabel("Frequency")
 pl.savefig("abc.png")
-
