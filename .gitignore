@@ -1,4 +1,3 @@
-
 # Created by https://www.gitignore.io/api/python
 
 ### Python ###
@@ -108,4 +107,9 @@ venv.bak/
 .DS_Store
 
 # End of https://www.gitignore.io/api/python
+
+# Files in jomtools
+data/
+interactions.csv
+items.csv
 

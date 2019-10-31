@@ -10,7 +10,7 @@
 # ------------------------------------------------------------------------------
 PYTHON_FOLDER='.'
 PYTHON_EXECUTER=$PYTHON_FOLDER'/venv/bin/python'
-PYTHON_FILE=$PYTHON_FOLDER'/pyFiles/main.py'
+PYTHON_FILE=$PYTHON_FOLDER'/pyFiles/_content_based/main.py'
  
  
 # 2. Running Python Scripts
