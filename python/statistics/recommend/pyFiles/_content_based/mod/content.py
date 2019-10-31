@@ -4,22 +4,19 @@
 # Content-based filtering method
 # -----------------------------------------------------------------------------
 
+import scipy
+import sklearn
+
 import numpy as np
 import pandas as pd
 
 from nltk.corpus import stopwords
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-import scipy
-import sklearn
 
 class ContentBasedModel(object):
     """Content-based model for Rever recommender system."""
-    def __init__(self):
-        pass
-
     def get_tfidf(self, items):
         """ The 'text' variable have a pandas Series with the concatenated
             text from all the items.
@@ -110,36 +107,21 @@ class ContentBasedModel(object):
                   .head(topn))
 
     def main(self, items, interactions):
-
+        # 1. Get TF-IDF matrix.
         tfidf = self.get_tfidf(items)
+        # 2. Build the a profile for every single user.
         users_profile = self.build_users_profile(items, interactions, tfidf)
-
+        # 3. From the model, get user profile and recommendations.
         # Print a test_user profile
         test_user_id = -1479311724257856983
         self.print_user_profile(test_user_id,
                                 tfidf,
                                 users_profile,
                                 print_output=False)
-
-        # From the model, get user recommendations.
         recommended = self.get_recommended_items(test_user_id,
                                                  tfidf,
                                                  users_profile,
                                                  interactions)
-
         print(recommended)
 
 # -----------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
