@@ -41,7 +41,8 @@ docker-compose up -d
 ```
 docker-compose ps
 ```
-5. Conectarse a la BD con el cliente. El usuario por defecto es root, la contraseña es holamundo, el puerto es 3308, el host es localhost y el schema es app_prueba
+5. Conectarse a la BD con el cliente. El usuario por defecto es root, la contraseña es holamundo, el puerto es 3308, el host es localhost y el schema es app_prueba.
+
 6. Crear la siguiente tabla corriendo el código en nuestro cliente.
 ```
 CREATE TABLE IF NOT EXISTS trips (
@@ -58,4 +59,5 @@ CREATE TABLE IF NOT EXISTS trips (
     PRIMARY KEY (trip_id)
 )  ENGINE=INNODB;
 ```
+
 7. Ingresar a la opción cargar datos desde archivo.

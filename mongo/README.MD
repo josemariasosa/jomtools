@@ -1,5 +1,57 @@
 # Mongo DB
 
+## Set-up
+
+### Installing MongoDB with Homebrew.
+
+Find the MongoDB tap.
+
+```bash
+brew tap mongodb/brew
+```
+
+Once the tap has been added locally, you can install individual software packages with:
+
+```bash
+brew install mongodb-community
+```
+
+Check the installation with:
+
+```bash
+> mongo --version
+MongoDB shell version v4.2.1
+git version: edf6d45851c0b9ee15548f0f847df141764a317e
+allocator: system
+modules: none
+build environment:
+    distarch: x86_64
+    target_arch: x86_64
+```
+
+Create a folder to store the database, so in you console run:
+
+Mac and Linux users:
+
+```bash
+sudo mkdir /data
+sudo mkdir /data/db
+```
+
+If you have Mac and updated to Catalina than the root folder is no longer writable.
+
+I just changed the directory somewhere else.
+
+Been using this command for now
+
+```bash
+mongod --dbpath=/Users/user/data/db
+```
+
+### Installing MongoDB using Docker.
+
+
+
 ## Description:
 
 This is a recopilation of hacks and tricks to move around Mongo DB with ease.
