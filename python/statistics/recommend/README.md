@@ -29,6 +29,12 @@ Download the files and put them in the correct location. When everything is read
 bash main.sh
 ```
 
+The first time I was running this script I had issues with `nltk` package. In case this happens again take a look to this issue in github: [**nltk-issue-1787**](https://github.com/nltk/nltk/issues/1787). However, you don't need to get into the issue to figure the solution out, I quote:
+
+```text
+Once upon a time I stumbled with this issue. If you're using macOS go to Macintosh HD > Applications > Python3.6 folder (or whatever version of python you're using) > double click on "Install Certificates.command" file. :D
+```
+
 ### 2. Importing the data
 
 When you run the script, like in the set-up, the first file that it is going to run is the `main.py`. Which contains a single class, **ContentBasedFiltering()**, that import all the data:
