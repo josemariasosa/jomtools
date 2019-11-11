@@ -7,10 +7,10 @@
 
 Tables and data types:
 
-Numeric - `INT`, `TINYINT`, `BIGINT`, `FLOAT`.
-String - `VARCHAR`, `TEXT`, `CHAR`.
-Dates - `DATE`, `DATETIME`, `TIMESTAMP`.
-Other - `BINARY`, `JSON`.
+- **Numeric**: `INT`, `TINYINT`, `BIGINT`, `FLOAT`.
+- **String**: `VARCHAR`, `TEXT`, `CHAR`.
+- **Dates**: `DATE`, `DATETIME`, `TIMESTAMP`.
+- **Other**: `BINARY`, `JSON`.
 
 There is not an explicit Boolean type, so commonly, `TINYINT` is used for booleans with 1 and 0. `VARCHAR` is great for names, emails, and small texts (255 chars). `TEXT` is for long texts, like blog posts.
 
