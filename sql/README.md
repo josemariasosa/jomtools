@@ -1,4 +1,388 @@
-# Relational Databases
+# SQL y bases de datos relacionales
+
+Aprendizajes de la última sesión:
+
+```txt
+- No importa cuánto te prepares, siempre habrán imprevistos.
+- Los problemas de compatibilidad no son la excepción, son la regla.
+- Hay que apoyarnos de nuestros compañeros.
+- Respira e inténtalo de nuevo.
+```
+
+## Instalación de MySQL
+
+### 1. Ubuntu Linux
+
+Instalar el motor (engine) de MySQL a través de la terminal de Ubuntu. Si no es la primera vez que se lleva a cabo este proceso, es conveniente asegurarse que no esté previamente instalado. [Pasos para **desinstalar completamente MySQL de Ubuntu**](https://linuxscriptshub.com/uninstall-completely-remove-mysql-ubuntu-16-04/).
+
+1. Abrir una ventana de la terminal.
+2. Correr el siguiente comando:
+   
+```bash
+sudo apt-get update
+```
+
+3. Ingresar la contraseña de la máquina.
+4. Instalar el servicio de MySQL corriendo el comando siguiente. Cada vez que nos pregunte si deseamos continuar, indicar que sí.
+
+```bash
+sudo apt-get install mysql-server
+```
+
+5. Para verificar que ha quedado correctamente instalado, revisar la versión mediante el siguiente comando.
+
+```bash
+mysql --version
+```
+
+Ya que hayamos verificado que MySQL quedó correctamente instalado, es momento de instalar MySQL Workbench.
+
+1. Abrir el instalador de [**Software de Ubuntu**](https://en.wikipedia.org/wiki/Ubuntu_Software_Center).
+2. Buscar MySQL Workbench y descargarlo.
+
+#### Alternativas de instalación en Ubuntu
+
+Después de múltiples instalaciones en distintas máquinas, nos enfrentamos contra el mismo problema de la configuración de MySQL. Para resolverlo aquí dejo una serie de pasos que pueden ser llevados a cabo desde la terminal. Revisemos 3 alternativas para una máquina con Ubuntu.
+
+**Alternativa 1**:
+
+```bash
+# Comandos de la terminal.
+sudo apt update
+sudo apt install mysql-server
+sudo mysql
+
+# Comandos de mysql.
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+FLUSH PRIVILEGES;
+exit
+
+# Comandos de la terminal.
+mysql -u root -p
+```
+
+**Alternativa 2**:
+
+```bash
+# Comandos de la terminal.
+sudo apt-get update
+sudo apt-get install mysql-server
+sudo mysql_secure_installation
+
+# Respuestas dentro de la configuración de mysql.
+VALIDATE-PASSWORD: Y
+LEVEL-OF-PASSWORD-VALIDATION: 0
+SET-NEW-PASSWORD: password
+CONTINUE-WITH-PROVIDED-PASS: Y
+REMOVE-ANONYMOUS-USERS: Y
+DISALLOW-REMOTE-LOGIN: Y
+REMOVE-TEST-DATABASE: Y
+RELOAD-PRIVILEGE-TABLES: Y
+ALL-DONE!
+
+# Comandos de la terminal.
+sudo mysql -u root
+```
+
+**Alternativa 3**:
+
+```bash
+# Comandos de la terminal.
+sudo apt-get update
+sudo apt-get install mysql-server
+sudo mysql_secure_installation
+
+# Respuestas dentro de la configuración de mysql.
+VALIDATE-PASSWORD: Y
+LEVEL-OF-PASSWORD-VALIDATION: 0
+SET-NEW-PASSWORD: password
+CONTINUE-WITH-PROVIDED-PASS: Y
+REMOVE-ANONYMOUS-USERS: Y
+DISALLOW-REMOTE-LOGIN: Y
+REMOVE-TEST-DATABASE: Y
+RELOAD-PRIVILEGE-TABLES: Y
+ALL-DONE!
+
+# Comandos de la terminal.
+sudo mysql -u root -p
+
+# Comandos de mysql.
+use mysql;
+UPDATE user SET plugin='mysql_native_password' WHERE User='root';
+UPDATE mysql.user SET authentication_string=PASSWORD('thisisaSTRONGpassword') WHERE user='root';
+FLUSH PRIVILEGES;
+exit
+
+# Comandos de la terminal.
+mysql -u root -p
+```
+
+### 2. Unix Mac
+
+1. Descargar y correr el instalador de [**MySQL Community Server**](https://dev.mysql.com/downloads/mysql/).
+2. Descargar y correr el instalador de [**MySQL Workbench**](https://dev.mysql.com/downloads/workbench/).
+
+Cuando se está instalando **MySQL Community Server** se debe definir la constraseña de `root`. Asegurate de no olvidarla.
+
+3. Añadir mysql al PATH.
+
+```bash
+# Current Session
+export PATH=${PATH}:/usr/local/mysql/bin
+# Permanantly
+echo 'export PATH="/usr/local/mysql/bin:$PATH"' >> ~/.bash_profile
+```
+
+Por default, el servidor de MySQL se correrá al iniciar el computador. Para correr, detener y reiniciar el servidor de MySQL desde la terminal, correr los siguientes comandos.
+
+**Correr MySQL**:
+
+```bash
+sudo /usr/local/mysql/support-files/mysql.server start
+```
+
+**Detener MySQL**:
+
+```bash
+sudo /usr/local/mysql/support-files/mysql.server stop
+```
+
+**Reiniciar MySQL**:
+
+```bash
+sudo /usr/local/mysql/support-files/mysql.server restart
+```
+
+Este mismo proceso puede ser llevado a cabo desde **Preferencias del Sistema** en el menú  de Apple. Seleccionar MySQL panel, y hacer click en "Start MySQL Server". Si el servidor está corriendo, el mismo botón dirá "Stop MySQL Server".
+
+## Introducción a SQL
+
+- Está basado en un modelo relacióanl de datos.
+- Por lo general, todos los gestores de bases de datos utilizan SQL.
+- SQL utiliza tablas, con filas y columnas.
+- Las tablas se pueden relacionar entre ellas por medio de llaves.
+
+## Sistema gestor de bases de datos (DBMS)
+
+Un sistema gestor de bases de datos es un software diseñado para definir, manipular, extraer y manejar datos dentro de una base de datos. El sistema generalmente manipula los datos, el formato de los datos, los nombres de los campos, la estructura de los registros y archivos. También define las reglas para validar y manipular los datos.
+
+Algunos ejemplos de sistemas gestores de bases de datos:
+
+- MySQL
+- SQL Server
+- Oracle
+- dBASE
+- FoxPro
+
+## MySQL
+
+- Sistema gestor de bases de datos relacionales abierto (open-source).
+- Utiliza el lenguaje SQL (Structured Query Language).
+- Una base de datos lider en el desarrollo de aplicaciones web.
+- Utilizada en aplicaciones pequeñas y en grandes compañías.
+- Utilizada con múltiples lenguajes: PHP, node, python, C#.
+- Multi plataforma: Windows, Mac, Linux.
+
+## Las tareas del Administrador
+
+### 1. Abrir Workbench
+
+- Levantar una conexión con el servidor local.
+- Hostname: `localhost`
+- Port: `3306`
+- User: `root`
+- Utilizar el password definido para root.
+
+### 2. Generar un nuevo Schema
+
+Revisar los schemas que actualmente tenemos.
+
+```sql
+SHOW DATABASES;
+```
+
+Respuesta:
+
+```txt
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+```
+
+Crear una nueva base de datos (Schema) con el siguiente comando desde Workbench.
+
+```sql
+CREATE DATABASE firstdb;
+```
+
+Asegurarse de que la base de datos haya sido creada, utilizando refresh en Workbench.
+
+### 3. Crear una nueva conexión
+
+1. Salirse de la sesión actual de MySQL Workbench.
+2. Desde el home de Workbench buscar el símbolo de más (+) junto a **MySQL Connections**.
+3. Utilizando los mismos parámetros de la conexión local, agregar como default schema el nuevo que acabamos de crear. En este caso `firstdb`.
+4. Abrimos la nueva conexión y observamos cómo entramos directamente al schema con el que vamos a trabajar.
+
+### 4. Comandos adicionales del Administrador
+
+#### 4.1 Administrar las bases de datos.
+
+Crear una nueva base de datos.
+
+```sql
+CREATE DATABASE acme;
+```
+
+Eliminar una base de datos.
+
+```sql
+DROP DATABASE acme;
+```
+
+Seleccionar una base de datos.
+
+```sql
+USE acme;
+```
+
+#### 4.2 Administrar a los usuarios.
+
+```sql
+SELECT User, Host FROM mysql.user;
+```
+
+Respuesta:
+
+```txt
++------------------+-----------+
+| User             | Host      |
++------------------+-----------+
+| mysql.infoschema | localhost |
+| mysql.session    | localhost |
+| mysql.sys        | localhost |
+| root             | localhost |
++------------------+-----------+
+4 rows in set (0.00 sec)
+```
+
+Para crear un usuario nuevo debemos correr el siguiente comando.
+
+```sql
+CREATE USER 'jose'@'localhost' IDENTIFIED BY '123456';
+```
+
+El valor `123456` es el password. Para eliminar el usuario, podemos utilizar el comando `DROP`.
+
+```sql
+DROP USER 'jose'@'localhost';
+```
+
+#### 4.3 Conceder todos los privilegios a un usuario
+
+```sql
+GRANT ALL PRIVILEGES ON * . * TO 'jose'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+Si deseamos revisar los privilegios de un usuario en particular, podemos revisar todo lo que el usuario puede hacer con el siguiente comando.
+
+```sql
+SHOW GRANTS FOR 'jose'@'localhost';
+```
+
+Para remover los privilegios de un usuario.
+
+```sql
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'jose'@'localhost';
+```
+
+
+
+
+
+### 4. Create and manage databases
+
+Show all the databases.
+
+```sql
+SHOW DATABASES;
+```
+
+Response:
+
+```text
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| test_db            |
++--------------------+
+5 rows in set (0.00 sec)
+```
+
+
+
+
+
+
+## Tipos de datos en SQL
+
+- **Numeric**: `INT`, `TINYINT`, `BIGINT`, `FLOAT`.
+- **String**: `VARCHAR`, `TEXT`, `CHAR`.
+- **Dates**: `DATE`, `DATETIME`, `TIMESTAMP`.
+- **Other**: `BINARY`, `JSON`.
+
+Los tipos de datos `CHAR` y `VARCHAR`, por lo general, son declarados con una longitud que indica el número máximo de caracteres que sea desan almacenar. Por ejemplo, `CHAR(30)` indica que dicha variable puede almacenar hasta 30 caracteres.
+
+La longitud de la columna `CHAR` se fija al valor que haya sido declarado y puede ir desde 0 hasta 255.
+
+Los valores en las columnas declaradas como `VARCHAR` son cadenas de caracteres con una longitud variable. La longitud puede id desde 0 hasta 65,535. `VARCHAR` es perfecto para nombres, emails y pequeños textos. Se puede utilizar `TEXT` para almacenar texto largos, como los post en un blog.
+
+No existe explícitamente un valor de tipo `BOOL`. `TINYINT(1)` es utilizado para representar valores booleanos con 0 y 1. El valor cero es considerado **falso**, y cualquier valor distinto de cero es considerado **verdadero**.
+
+```sql
+mysql> SELECT IF(0, 'true', 'false');
+# +------------------------+
+# | IF(0, 'true', 'false') |
+# +------------------------+
+# | false                  |
+# +------------------------+
+
+mysql> SELECT IF(1, 'true', 'false');
+# +------------------------+
+# | IF(1, 'true', 'false') |
+# +------------------------+
+# | true                   |
+# +------------------------+
+
+mysql> SELECT IF(2, 'true', 'false');
+# +------------------------+
+# | IF(2, 'true', 'false') |
+# +------------------------+
+# | true                   |
+# +------------------------+
+```
+
+La llave primaria, `Primary Key`, es el identificador único de los elementos dentro de una tabla. Los nombres o apellidos no deben ser utilizados como llave primaria porque pueden llegar a repetirse dentro de las columnas, en su lugar se debe de definir un id.
+
+
+
+
+
+
+
+
+# SQL and Relational Databases
 
 - Based on relational model of data.
 - Virtually, all relational database management system uses SQL to manage them.
