@@ -349,78 +349,437 @@ mysql> SELECT IF(2, 'true', 'false');
 # +------------------------+
 ```
 
-## Inserting new data
+## Ingresando nuevos datos
 
+### 1. Crear y eliminar una tabla.
 
+Para crear una tabla nueva, debemos indicar:
 
+- todos los campos que ha de llevar
+- los tipos de datos que se van a almacenar
+- especificar la longitud máxima de los campos
+- establecer un primary key
 
+La llave primaria, `Primary Key`, es el identificador único de los elementos dentro de una tabla. Los nombres o apellidos no deben ser utilizados como llave primaria porque pueden llegar a repetirse dentro de las columnas, en su lugar se debe definir un id.
 
-
-### 5. Create Table
+Dentro de nuestra base de datos `frisdb` vamos a crear una tabla de usuarios que contenga la siguient información.
 
 ```sql
 CREATE TABLE users(
-id INT AUTO_INCREMENT,
-   first_name VARCHAR(100),
-   last_name VARCHAR(100),
+   id INT AUTO_INCREMENT,
+   nombre VARCHAR(100),
+   apellido VARCHAR(100),
    email VARCHAR(50),
    password VARCHAR(20),
-   location VARCHAR(100),
-   department VARCHAR(100),
+   ciudad VARCHAR(100),
+   departamento VARCHAR(100),
    is_admin TINYINT(1),
-   register_date DATETIME,
+   fecha_registro DATETIME,
    PRIMARY KEY(id)
 );
 ```
 
-To delete a table.
+Podemos observar cómo la tabla está creada, utilizando el comando `SHOW`, o dentro de Workbench debajo de nuestro schema.
+
+```sql
+SHOW TABLES;
+# +-------------------+
+# | Tables_in_firstdb |
+# +-------------------+
+# | users             |
+# +-------------------+
+# 1 row in set (0.00 sec)
+```
+
+Si quisiéramos borrar la tabla, podríamos utilizar el comando `DROP`.
 
 ```sql
 DROP TABLE tablename;
 ```
 
-To show all the tables.
+### 2. Insertar registros nuevos.
+
+Para poder visualizar valores dentro de nuestra tabla, hay que insertar **una fila nueva**.
 
 ```sql
-SHOW TABLES;
-```
-
-Response:
-
-```text
-+-------------------+
-| Tables_in_test_db |
-+-------------------+
-| trips             |
-+-------------------+
-1 row in set (0.00 sec)
-```
-
-### 6. Create records in a table
-
-For this exercise we load a full CSV file using the MySQL client. But you can also load individual and multiple records using the following commands.
-
-```sql
-INSERT INTO users(first_name, last_name, email, password, location, department, is_admin, register_date) VALUES ('John', 'Doe', 'john@gmail.com', '1233456', 'Jalisco', 'Data Science', 1, now());
+INSERT INTO users(
+   nombre,
+   apellido,
+   email,
+   password,
+   ciudad,
+   departamento,
+   is_admin,
+   fecha_registro) VALUES (
+   'Maria',
+   'Campos',
+   'campos@gmail.com',
+   '1233456',
+   'Guadalajara',
+   'desarrollo',
+   1,
+   now());
 
 SELECT * FROM users;
 ```
 
-Response:
+Resultado:
 
 ```text
-+----+------------+-----------+----------------+----------+----------+--------------+----------+---------------------+
-| id | first_name | last_name | email          | password | location | department   | is_admin | register_date       |
-+----+------------+-----------+----------------+----------+----------+--------------+----------+---------------------+
-|  1 | John       | Doe       | john@gmail.com | 1233456  | Jalisco  | Data Science |        1 | 2019-11-05 01:58:44 |
-+----+------------+-----------+----------------+----------+----------+--------------+----------+---------------------+
++----+--------+----------+------------------+----------+-----------+--------------+----------+---------------------+
+| id | nombre | apellido | email            | password | ciudad | departamento | is_admin | fecha_registro      |
++----+--------+----------+------------------+----------+-----------+--------------+----------+---------------------+
+|  1 | Maria  | Campos   | campos@gmail.com | 1233456  | Guadalajara   | desarrollo   |        1 | 2019-11-13 07:50:04 |
++----+--------+----------+------------------+----------+-----------+--------------+----------+---------------------+
 1 row in set (0.00 sec)
 ```
 
-Insert multiple records:
+Si observamos con detalle, la **columna de id** se creó de manera automática y esperamos se vaya incrementado con cada registro nuevo. Ahora insertemos **múltiples registros** de una sola vez.
+
+La función **now()** de MySQL nos permite generar automáticamente un valor con la fecha y hora actual.
 
 ```sql
-INSERT INTO users (first_name, last_name, email, password, location, department,  is_admin, register_date) values ('Fred', 'Smith', 'fred@gmail.com', '123456', 'New York', 'design', 0, now()), ('Sara', 'Watson', 'sara@gmail.com', '123456', 'New York', 'design', 0, now()),('Will', 'Jackson', 'will@yahoo.com', '123456', 'Rhode Island', 'development', 1, now()),('Paula', 'Johnson', 'paula@yahoo.com', '123456', 'Massachusetts', 'sales', 0, now()),('Tom', 'Spears', 'tom@yahoo.com', '123456', 'Massachusetts', 'sales', 0, now());
+INSERT INTO users (nombre, apellido, email, password, ciudad, departamento,  is_admin, fecha_registro) values ('Alfredo', 'Estevan', 'alfredo@gmail.com', '123456', 'Monterrey', 'diseño', 0, now()), ('Sara', 'Ibarra', 'sara@gmail.com', '123456', 'Monterrey', 'diseño', 0, now()),('Andrés', 'Sosa', 'andy@yahoo.com', '123456', 'Mérida', 'desarrollo', 1, now()),('Paula', 'García', 'paula@yahoo.com', '123456', 'Guadalajara', 'ventas', 0, now()),('Roberto', 'Ibanez', 'roberto@yahoo.com', '123456', 'Guadalajara', 'ventas', 0, now());
+```
+
+#### Ejercicio
+
+1. Cómo podríamos visualizar la información de los usuarios de Guadalajara.
+2. Cómo podríamos visualizar la información de los desarrolladores en Guadalajara.
+3. Cómo podríamos visualizar el nombre y apellido de las personas de desarrollo y diseño.
+4. Cuántos usuarios pertenecen a Guadalajara.
+
+Respuestas.
+
+```sql
+# Respuesta 1
+SELECT * FROM users WHERE ciudad='Guadalajara';
+
+# Respuesta 2
+SELECT * FROM users WHERE ciudad='Guadalajara' AND departamento='desarrollo';
+
+# Respuesta 3
+SELECT nombre, apellido, departamento FROM users WHERE departamento='desarrollo' OR departamento='diseño';
+
+# Respuesta 4
+SELECT COUNT(*) AS 'total' FROM users WHERE ciudad='Guadalajara';
+```
+
+### 3. Insertar registros nuevos a partir de un archivo.
+
+Descargar el archivo con 1000 registros del [*Sitema de Mibici de Guadalajara*](https://raw.githubusercontent.com/josemariasosa/jomtools-data/master/sql/exercises/1-setup/mibici.csv). 
+
+El archivo se puede desacargar directamente de la terminal utilizando el comando de `curl` y añadiendo una ubicación destino.
+
+```bash
+curl https://raw.githubusercontent.com/josemariasosa/jomtools-data/master/sql/exercises/1-setup/mibici.csv >> mibici.csv
+```
+
+Para poder ingresar los valores de nuestro archivo CSV, primero debemos generar una tabla nueva.
+
+```sql
+CREATE TABLE IF NOT EXISTS trips (
+    trip_id INT AUTO_INCREMENT,
+    Genero_Usuario VARCHAR(255) NOT NULL,
+    Edad_Usuario INT,
+    Bici INT,
+    Ciclo_Estacion_Retiro VARCHAR(255) NOT NULL,
+    Fecha_Retiro VARCHAR(255) NOT NULL,
+    Hora_Retiro VARCHAR(255),
+    Ciclo_Estacion_Arribo VARCHAR(255),
+    Fecha_Arribo VARCHAR(255),
+    Hora_Arribo VARCHAR(255),
+    PRIMARY KEY (trip_id)
+)  ENGINE=INNODB;
+```
+
+**InnoDB** es el motor de almacenamiento de la base de datos MySQL. Es el sistema que se utiliza por default, por lo tanto, no requiere aparecer explícitamente. Si se desean revisar más características ir a la [**documentación de MySQL**](https://dev.mysql.com/doc/refman/8.0/en/using-innodb-tables.html).
+
+Observemos cuáles son las tablas con las que contamos en nuestra base de datos.
+
+```sql
+SHOW TABLES;
+# +-------------------+
+# | Tables_in_firstdb |
+# +-------------------+
+# | trips             |
+# | users             |
+# +-------------------+
+# 2 rows in set (0.00 sec)
+```
+
+Para cargar los archivos desde un file, vayamos a MySQL Workbench y corramos el siguiente comando:
+
+```sql
+SELECT * FROM trips;
+```
+
+En la parte superior de los resultados podemos ver la opción `Export/Import`, presionemos el botón de importar y sigamos los pasos. Una vez cargados todos los datos corramos el mismo comando para verificar si han sido ingresados correctamente.
+
+#### Ejercicio
+
+1. Selecciona todos los viajes con usuarios con edad arriba de 30.
+2. Selecciona todos los viajes empezados después de las 5 de la tarde hechos por una mujer.
+3. Regresame los identificadores de las estaciones retiradas antes de las 8 de la mañana y después de las 5 de la tarde.
+
+```sql
+# Respuesta 1
+SELECT * FROM trips WHERE Edad_Usuario > 60;
+
+# Respuesta 2
+SELECT * FROM trips WHERE Hora_Retiro > '17:00:00' and Genero_Usuario = 'F';
+
+# Respuesta 3
+SELECT Ciclo_Estacion_Retiro FROM trips WHERE Hora_Retiro > '17:00:00' OR Hora_Retiro < '8:00:00';
+```
+
+## Select
+
+El comando `SELECT` nos ayuda a filtrar las columnas de nuestra tabla. Para generar una descripción de cualquier tabla y mirar las columnas que tiene podemos utilizar el comando de `DESCRIBE`.
+
+```sql
+DESCRIBE users;
+# +----------------+--------------+------+-----+---------+----------------+
+# | Field          | Type         | Null | Key | Default | Extra          |
+# +----------------+--------------+------+-----+---------+----------------+
+# | id             | int(11)      | NO   | PRI | NULL    | auto_increment |
+# | nombre         | varchar(100) | YES  |     | NULL    |                |
+# | apellido       | varchar(100) | YES  |     | NULL    |                |
+# | email          | varchar(50)  | YES  |     | NULL    |                |
+# | password       | varchar(20)  | YES  |     | NULL    |                |
+# | ciudad         | varchar(100) | YES  |     | NULL    |                |
+# | departamento   | varchar(100) | YES  |     | NULL    |                |
+# | is_admin       | tinyint(1)   | YES  |     | NULL    |                |
+# | fecha_registro | datetime     | YES  |     | NULL    |                |
+# +----------------+--------------+------+-----+---------+----------------+
+# 9 rows in set (0.00 sec)
+```
+
+Teniendo esta información a la mano, corramos algunos comandos `SELECT`.
+
+```sql
+SELECT * FROM users;
+```
+
+La respuesta de este comando es la tabla completa. Si quisieramos regresar solo los valores del email y ciudad, debemos especificarlos.
+
+```sql
+SELECT email, ciudad FROM users;
+# +-------------------+-------------+
+# | email             | ciudad      |
+# +-------------------+-------------+
+# | campos@gmail.com  | Guadalajara |
+# | alfredo@gmail.com | Monterrey   |
+# | sara@gmail.com    | Monterrey   |
+# | andy@yahoo.com    | Mérida      |
+# | paula@yahoo.com   | Guadalajara |
+# | roberto@yahoo.com | Guadalajara |
+# +-------------------+-------------+
+# 6 rows in set (0.00 sec)
+```
+
+## Where
+
+El comando `WHERE` nos ayuda a filtrar los resultados, manteniendo únicamente los que cumplen con cierta condición.
+
+```sql
+SELECT * FROM users WHERE ciudad='Guadalajara';
+```
+
+Los comandos `AND` y `OR` nos permiten generar consultas más completas.
+
+```sql
+SELECT * FROM users WHERE ciudad='Guadalajara' AND departamento='desarrollo';
+
+SELECT nombre, apellido, departamento FROM users WHERE departamento='desarrollo' OR departamento='diseño';
+```
+
+## Ordenar los resultados
+
+El comando `ORDER BY` nos permite ordenar los resultados de manera ascendente, `ASC`, o descendente, `DESC`.
+
+```sql
+SELECT nombre, apellido FROM users ORDER BY apellido ASC;
+# +---------+----------+
+# | nombre  | apellido |
+# +---------+----------+
+# | Maria   | Campos   |
+# | Alfredo | Estevan  |
+# | Paula   | García   |
+# | Roberto | Ibanez   |
+# | Sara    | Ibarra   |
+# | Andrés  | Sosa     |
+# +---------+----------+
+# 6 rows in set (0.00 sec)
+
+SELECT nombre, apellido FROM users ORDER BY apellido DESC;
+# +---------+----------+
+# | nombre  | apellido |
+# +---------+----------+
+# | Andrés  | Sosa     |
+# | Sara    | Ibarra   |
+# | Roberto | Ibanez   |
+# | Paula   | García   |
+# | Alfredo | Estevan  |
+# | Maria   | Campos   |
+# +---------+----------+
+# 6 rows in set (0.00 sec)
+```
+
+## Concatenar múltiples columnas
+
+```sql
+SELECT id, CONCAT(nombre, ' ', apellido) AS 'User', email FROM users;
+# +----+-----------------+-------------------+
+# | id | User            | email             |
+# +----+-----------------+-------------------+
+# |  1 | Maria Campos    | campos@gmail.com  |
+# |  2 | Alfredo Estevan | alfredo@gmail.com |
+# |  3 | Sara Ibarra     | sara@gmail.com    |
+# |  4 | Andrés Sosa     | andy@yahoo.com    |
+# |  5 | Paula García    | paula@yahoo.com   |
+# |  6 | Roberto Ibanez  | roberto@yahoo.com |
+# +----+-----------------+-------------------+
+# 6 rows in set (0.00 sec)
+```
+
+## Obtener los valores únicos
+
+```sql
+SELECT DISTINCT departamento FROM users;
+# +--------------+
+# | departamento |
+# +--------------+
+# | desarrollo   |
+# | diseño       |
+# | ventas       |
+# +--------------+
+# 3 rows in set (0.00 sec)
+```
+
+#### Ejercicio
+
+1. Cuáles son las ciudades distintas, ordenadas alfabéticamente.
+2. Cuántas ciudades diferentes existen.
+
+```sql
+# Respuesta 1
+SELECT DISTINCT ciudad FROM users ORDER BY ciudad ASC;
+
+# Respuesta 2
+SELECT COUNT(DISTINCT ciudad) AS 'Total' from users;
+```
+
+## Filtrado avanzado
+
+### 1. Between
+
+Para hacer obtener registros que se encuentren dentro de un rango de valores, utilizamos `BETWEEN`.
+
+```sql
+SELECT * FROM trips WHERE Edad_Usuario BETWEEN 20 AND 25;
+```
+
+#### Ejercicio
+
+1. Qué porcentaje de los usuarios, de nuestra muestra de 1000 viajes, se encuentra entre el rango de edad de 20 a 25.
+
+### 2. Like
+
+El comando de `LIKE` nos ayuda hacer búsquedas dentro de los campos.
+
+Queremos buscar todos los departamentos que comiencen con el texto ...
+
+```sql
+SELECT * FROM users WHERE departamento LIKE 'd%';
+SELECT * FROM users WHERE departamento LIKE 'des%';
+```
+
+Que terminen con el texto ...
+
+```sql
+SELECT * FROM users WHERE departamento LIKE '%s';
+```
+
+Que incluya el siguiente texto ...
+
+```sql
+SELECT * FROM users WHERE departamento LIKE '%o%';
+```
+
+### 3. Not
+
+Si queremos hacer lo opuesto. Qué tal los departamentos que no incluyan el siguiente texto ...
+
+```sql
+SELECT * FROM users WHERE departamento NOT LIKE '%o%';
+```
+
+Y obtenemos la tabla complementaria, la que resultaría cuando la condición proporcionada no se cumple.
+
+### 4. In
+
+Podemos utilizar una lista, en lugar de combinar múltiples condiciones.
+
+```sql
+SELECT * FROM users WHERE departamento IN ('diseño', 'ventas');
+```
+#### Ejercicio
+
+1. Leer el siguiente query y decir qué va a regresar.
+
+   ```sql
+   SELECT *
+   FROM trips
+   WHERE Edad_Usuario NOT IN (50, 30, 20)
+   AND Bici IN (10643, 9648, 9929);
+   ```
+
+2. Selecciona todos los viajes que tengan usuarios con edades de 10, 20 y 30.
+
+3. Selecciona todos los viajes que no tengan usuarios con edades de 35, 20 y 18.
+
+4. Selecciona todos los viajes usuarios con edades de 35, 20 y 18 y que han usado las bicicletas 7486, 9299 y 7552.
+
+5. Selecciona todos los viajes usuarios con edades diferentes a 50, 30 y 20 y que han usado las bicicletas 10643, 9648 y 9929.
+
+6. Consulta el genero y edad del usuario en los viajes que terminaron a las 12 horas con x minutos.
+
+7. Consulta el genero de los usuarios que viajaron a las 7 horas con x minutos y que son menores de edad.
+
+```sql
+# Respuesta 2
+SELECT *
+FROM trips
+WHERE Edad_Usuario in (10, 20, 30);
+
+# Respuesta 3
+SELECT *
+FROM trips
+WHERE Edad_Usuario not in (35, 20, 18);
+
+# Respuesta 4
+SELECT *
+FROM trips
+WHERE Edad_Usuario IN (35, 20, 18)
+AND Bici IN (7486, 9299, 7552);
+
+# Respuesta 5
+SELECT *
+FROM trips
+WHERE Edad_Usuario NOT IN (50, 30, 20)
+AND Bici IN (10643, 9648, 9929);
+
+# Respuesta 6
+SELECT Genero_Usuario, Edad_Usuario
+FROM trips
+WHERE Hora_Arribo like '12%';
+
+# Respuesta 7
+SELECT Genero_Usuario
+FROM trips
+WHERE Hora_Retiro like '19%'
+AND Edad_Usuario < 18;
 ```
 
 
@@ -433,7 +792,24 @@ INSERT INTO users (first_name, last_name, email, password, location, department,
 
 
 
-La llave primaria, `Primary Key`, es el identificador único de los elementos dentro de una tabla. Los nombres o apellidos no deben ser utilizados como llave primaria porque pueden llegar a repetirse dentro de las columnas, en su lugar se debe de definir un id.
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
