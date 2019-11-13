@@ -626,6 +626,22 @@ SELECT nombre, apellido FROM users ORDER BY apellido DESC;
 # 6 rows in set (0.00 sec)
 ```
 
+Si se desea ordenar por más de una columna se especifica después de `ORDER BY` las columnas, en base al orden de prioridad.
+
+```sql
+SELECT ciudad, departamento, email FROM users ORDER BY ciudad ASC, departamento DESC;
+# +-------------+--------------+-------------------+
+# | ciudad      | departamento | email             |
+# +-------------+--------------+-------------------+
+# | Guadalajara | ventas       | paula@yahoo.com   |
+# | Guadalajara | ventas       | roberto@yahoo.com |
+# | Guadalajara | desarrollo   | campos@gmail.com  |
+# | Mérida      | desarrollo   | andy@yahoo.com    |
+# | Monterrey   | diseño       | alfredo@gmail.com |
+# | Monterrey   | diseño       | sara@gmail.com    |
+# +-------------+--------------+-------------------+
+```
+
 ## Concatenar múltiples columnas
 
 ```sql
@@ -707,6 +723,20 @@ Que incluya el siguiente texto ...
 SELECT * FROM users WHERE departamento LIKE '%o%';
 ```
 
+Queremos los usuarios que tengan correo de Yahoo.
+
+```sql
+SELECT * FROM users WHERE email LIKE '%yahoo%';
+# +----+---------+----------+-------------------+----------+-------------+--------------+----------+---------------------+
+# | id | nombre  | apellido | email             | password | ciudad      | departamento | is_admin | fecha_registro      |
+# +----+---------+----------+-------------------+----------+-------------+--------------+----------+---------------------+
+# |  4 | Andrés  | Sosa     | andy@yahoo.com    | 123456   | Mérida      | desarrollo   |        1 | 2019-11-13 07:59:08 |
+# |  5 | Paula   | García   | paula@yahoo.com   | 123456   | Guadalajara | ventas       |        0 | 2019-11-13 07:59:08 |
+# |  6 | Roberto | Ibanez   | roberto@yahoo.com | 123456   | Guadalajara | ventas       |        0 | 2019-11-13 07:59:08 |
+# +----+---------+----------+-------------------+----------+-------------+--------------+----------+---------------------+
+# 3 rows in set (0.00 sec)
+```
+
 ### 3. Not
 
 Si queremos hacer lo opuesto. Qué tal los departamentos que no incluyan el siguiente texto ...
@@ -782,20 +812,266 @@ WHERE Hora_Retiro like '19%'
 AND Edad_Usuario < 18;
 ```
 
+## Operaciones matemáticas
 
+Existen funciones en MySQL que permiten realizar cálculos en un conjunto de valores, y luego, devuelve un solo valor.
 
+### 1. COUNT, SUM y AVG
 
+La función `SUM` calcula la suma de los valores presentes en una columna.
 
+Hay que calcular la edad promedio de los usuarios.
 
-
-
-
-
-
-
-
-
+```sql
+SELECT SUM(Edad_Usuario) FROM trips;
+# +-------------------+
+# | sum(Edad_Usuario) |
+# +-------------------+
+# |             38282 |
+# +-------------------+
+# 1 row in set (0.00 sec)
  
+SELECT SUM(Edad_Usuario)/1000 FROM trips;
+# +------------------------+
+# | sum(Edad_Usuario)/1000 |
+# +------------------------+
+# |                38.2820 |
+# +------------------------+
+# 1 row in set (0.00 sec)
+```
+
+La función `AVG` nos regresa directamente el promedio, así nos ahorramos los pasos anteriores. Podemos utilizar la media para crear queries más completos.
+
+```sql
+SELECT trip_id, Edad_Usuario
+FROM trips 
+WHERE Edad_Usuario > (
+SELECT AVG(Edad_Usuario)
+FROM trips);
+```
+
+La función `COUNT` devuelve el número de filas que coinciden con un criterio específico.
+
+#### Ejercicio
+
+1. Contar los usuarios que son mayores que la edad promedio.
+
+2. Qué porcentaje es.
+
+```sql
+# Respuesta 1
+SELECT COUNT(*)
+FROM trips
+WHERE Edad_Usuario > (
+   SELECT AVG(Edad_Usuario)
+   FROM trips);
+# +----------+
+# | COUNT(*) |
+# +----------+
+# |      401 |
+# +----------+
+# 1 row in set (0.00 sec)
+
+# Respuesta 2
+SELECT COUNT(*) / 1000
+FROM trips
+WHERE Edad_Usuario > (
+   SELECT AVG(Edad_Usuario)
+   FROM trips);
+# +-----------------+
+# | COUNT(*) / 1000 |
+# +-----------------+
+# |          0.4010 |
+# +-----------------+
+# 1 row in set (0.00 sec)
+```
+
+### 3.2 MAX y MIN
+
+La función `MAX` y `MIN` regresar el valor mayor y menor, respectivamente, de alguna columna seleccionada.
+
+#### Ejercicio
+
+1. ¿Cuántos ciclistas mujeres usaron ecobici el 1ero de Enero?
+
+2. ¿Cuántos ciclistas hombres usaron ecobici el 20 de Enero?
+
+3. ¿Cuál es el promedio de la edad de los ciclistas?
+
+4. ¿Cuántos años tenía el viajero más viejo el 27 de Enero?
+
+5. ¿Cuántos años tenía el viajero más joven el 15 de Enero?
+
+```sql
+# Respuesta 1
+select COUNT(*) AS "cant_ciclistas_mujeres"
+from trips
+where Fecha_Retiro like '01%'
+and Genero_Usuario = 'F'
+
+# Respuesta 2
+select COUNT(*) AS "cant_ciclistas_hombres"
+from trips
+where Fecha_Retiro like '20%'
+and Genero_Usuario = 'M'
+
+# Respuesta 3
+select AVG(Edad_Usuario)
+from trips
+
+# Respuesta 4
+select MAX(Edad_Usuario)
+from trips
+where Fecha_Retiro like '27%'
+
+# Respuesta 5
+select MIN(Edad_Usuario)
+from trips
+where Fecha_Retiro like '15%'
+```
+
+## Subconsultas
+
+- Las subconsultas en SQL es una consulta, dentro de otra consulta.
+- Las subconsultas proporcionan datos a la consulta adjunta.
+- Las subconsultas pueden regresar:
+   - Listas
+   - Valores únicos
+- Las subconsultas deben ir entre paréntesis.
+
+#### Ejercicio
+
+1. Utilizando una subconsulta, regresar los trip_id como **tabla** junto con la edad, con los viajes con el usuario más joven.
+
+2. Utilizando una subconsulta, regresar los trip_id como **lista**, con los viajes con el usuario más joven.
+
+3. Regresar el: trip_id, Genero_Usuario, Edad_Usuario, Bici en donde el **trip_id** sea parte del la lista del ejercicio anterior.
+
+4. Mira el siguiente código y analiza qué respuesta puede arrojar.
+
+  ```sql
+  SELECT DISTINCT(
+      (select COUNT(*)
+           from trips
+           where Fecha_Retiro like '01%'
+             and Genero_Usuario = 'M') / (select COUNT(*)
+                                          from trips
+                                          where Fecha_Retiro like '01%')
+      ) AS 'TOTAL'
+  FROM trips;
+  ```
+
+5. ¿Qué porcentaje de ciclistas fueron mujeres el 3 de Enero?
+
+6. ¿Qué porcentaje de ciclistas salen a las 5 de la mañana?
+
+7. ¿En la segunda mitad de Enero, cuantos viajes se hicieron y cuál fue la edad promedio de los ciclistas?
+
+```sql
+# Respuesta 1
+select trip_id, Edad_Usuario
+FROM trips
+where Edad_Usuario = (
+   SELECT min(Edad_Usuario)
+   FROM trips);
+
+# Respuesta 2
+select trip_id
+FROM trips
+where Edad_Usuario = (
+   SELECT min(Edad_Usuario)
+   FROM trips);
+
+# Respuesta 3
+SELECT trip_id, Genero_Usuario, Edad_Usuario, Bici
+FROM trips
+WHERE trip_id IN (SELECT trip_id
+  FROM trips
+  WHERE Edad_Usuario = (
+    SELECT min(Edad_Usuario)
+    FROM trips));
+
+# Respuesta 5
+SELECT DISTINCT(
+    (select COUNT(*)
+         from trips
+         where Fecha_Retiro like '01%'
+           and Genero_Usuario = 'F') / (select COUNT(*)
+                                        from trips
+                                        where Fecha_Retiro like '03%')
+    ) AS 'porc_ciclistas_mujeres'
+FROM trips;
+
+# Respuesta 6
+SELECT DISTINCT(
+    (select COUNT(*)
+         from trips
+         where Hora_Retiro like '5%') / (select COUNT(*)
+                                        from trips)
+    ) AS 'porc_ciclistas_madrugaderos'
+FROM trips
+
+# Respuesta 7
+SELECT COUNT(*), AVG(Edad_Usuario)
+FROM (SELECT Genero_Usuario, Edad_Usuario
+      FROM trips
+      where Fecha_Retiro >= '15/01/2018') MITAD_MES
+```
+
+## Join
+
+Una cláusula `JOIN` se usa para combinar filas de dos o más tablas, en función de una columna relacionada entre ellas. Cuatro tipos de joins.
+
+- Inner join
+- Full join
+- Left join
+- Right join
+
+## Teoría de conjunto
+
+Unión
+Intersección
+Diferencia
+
+#### Ejercicio
+
+1. Descargar los archivos en formato CSV de [**los productos**](https://docs.google.com/spreadsheets/d/1JhLMEdxBM_YqW2Db37Qf8O_PDJDpRB0QKKmQILqsjUw/edit?usp=sharing) y [**las ordenes**](https://docs.google.com/spreadsheets/d/1qjab_J_bldjtV9lN5nnUzbdKN-fcK0LFVUZGOvmVSmE/edit?usp=sharing).
+
+2. Crear una tabla nueva para cada elemento.
+
+3. Hacer un join para ver qué producto y cuánto cuesta de cada orden.
+
+```sql
+CREATE TABLE products(
+    product_id INT,
+    product_name VARCHAR(100),
+    price INT,
+    PRIMARY KEY(product_id)
+);
+
+CREATE TABLE orders(
+    order_id INT,
+    product_id INT,
+    quantity INT,
+    PRIMARY KEY(order_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+SELECT 
+  order_id AS o_id
+  product_id AS p_id
+  quantity AS q
+FROM orders
+LEFT JOIN products
+ON orders.product_id = products.product_id;
+
+Select order_id#, (quantity * price) as total
+from (SELECT *
+  FROM orders
+  LEFT JOIN products
+  ON orders.product_id = products.product_id) q;
+```
+    
 
 
 
@@ -817,6 +1093,10 @@ AND Edad_Usuario < 18;
 
 
 
+
+---
+
+## English edition
 
 # SQL and Relational Databases
 
