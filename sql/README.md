@@ -185,6 +185,10 @@ Algunos ejemplos de sistemas gestores de bases de datos:
 
 ## Las tareas del Administrador
 
+Dentro de esta sección vamos a crear una base de datos nueva en MySQL y generar una conexión directa con esa base de datos.
+
+Además, se revisarán algunos comandos básicos para la administración de las bases de datos y usuarios.
+
 ### 1. Abrir Workbench
 
 - Levantar una conexión con el servidor local.
@@ -234,25 +238,27 @@ Asegurarse de que la base de datos haya sido creada, utilizando refresh en Workb
 
 #### 4.1 Administrar las bases de datos.
 
-Crear una nueva base de datos.
+**Crear** una nueva base de datos.
 
 ```sql
 CREATE DATABASE acme;
 ```
 
-Eliminar una base de datos.
+**Eliminar** una base de datos.
 
 ```sql
 DROP DATABASE acme;
 ```
 
-Seleccionar una base de datos.
+**Seleccionar** una base de datos.
 
 ```sql
 USE acme;
 ```
 
 #### 4.2 Administrar a los usuarios.
+
+Mostrar todos los usuarios de una base de datos.
 
 ```sql
 SELECT User, Host FROM mysql.user;
@@ -303,38 +309,6 @@ Para remover los privilegios de un usuario.
 REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'jose'@'localhost';
 ```
 
-
-
-
-
-### 4. Create and manage databases
-
-Show all the databases.
-
-```sql
-SHOW DATABASES;
-```
-
-Response:
-
-```text
-+--------------------+
-| Database           |
-+--------------------+
-| information_schema |
-| mysql              |
-| performance_schema |
-| sys                |
-| test_db            |
-+--------------------+
-5 rows in set (0.00 sec)
-```
-
-
-
-
-
-
 ## Tipos de datos en SQL
 
 - **Numeric**: `INT`, `TINYINT`, `BIGINT`, `FLOAT`.
@@ -349,6 +323,8 @@ La longitud de la columna `CHAR` se fija al valor que haya sido declarado y pued
 Los valores en las columnas declaradas como `VARCHAR` son cadenas de caracteres con una longitud variable. La longitud puede id desde 0 hasta 65,535. `VARCHAR` es perfecto para nombres, emails y pequeños textos. Se puede utilizar `TEXT` para almacenar texto largos, como los post en un blog.
 
 No existe explícitamente un valor de tipo `BOOL`. `TINYINT(1)` es utilizado para representar valores booleanos con 0 y 1. El valor cero es considerado **falso**, y cualquier valor distinto de cero es considerado **verdadero**.
+
+Correr los siguientes comandos en MySQL para **evaluar los resultados**.
 
 ```sql
 mysql> SELECT IF(0, 'true', 'false');
@@ -372,6 +348,90 @@ mysql> SELECT IF(2, 'true', 'false');
 # | true                   |
 # +------------------------+
 ```
+
+## Inserting new data
+
+
+
+
+
+
+### 5. Create Table
+
+```sql
+CREATE TABLE users(
+id INT AUTO_INCREMENT,
+   first_name VARCHAR(100),
+   last_name VARCHAR(100),
+   email VARCHAR(50),
+   password VARCHAR(20),
+   location VARCHAR(100),
+   department VARCHAR(100),
+   is_admin TINYINT(1),
+   register_date DATETIME,
+   PRIMARY KEY(id)
+);
+```
+
+To delete a table.
+
+```sql
+DROP TABLE tablename;
+```
+
+To show all the tables.
+
+```sql
+SHOW TABLES;
+```
+
+Response:
+
+```text
++-------------------+
+| Tables_in_test_db |
++-------------------+
+| trips             |
++-------------------+
+1 row in set (0.00 sec)
+```
+
+### 6. Create records in a table
+
+For this exercise we load a full CSV file using the MySQL client. But you can also load individual and multiple records using the following commands.
+
+```sql
+INSERT INTO users(first_name, last_name, email, password, location, department, is_admin, register_date) VALUES ('John', 'Doe', 'john@gmail.com', '1233456', 'Jalisco', 'Data Science', 1, now());
+
+SELECT * FROM users;
+```
+
+Response:
+
+```text
++----+------------+-----------+----------------+----------+----------+--------------+----------+---------------------+
+| id | first_name | last_name | email          | password | location | department   | is_admin | register_date       |
++----+------------+-----------+----------------+----------+----------+--------------+----------+---------------------+
+|  1 | John       | Doe       | john@gmail.com | 1233456  | Jalisco  | Data Science |        1 | 2019-11-05 01:58:44 |
++----+------------+-----------+----------------+----------+----------+--------------+----------+---------------------+
+1 row in set (0.00 sec)
+```
+
+Insert multiple records:
+
+```sql
+INSERT INTO users (first_name, last_name, email, password, location, department,  is_admin, register_date) values ('Fred', 'Smith', 'fred@gmail.com', '123456', 'New York', 'design', 0, now()), ('Sara', 'Watson', 'sara@gmail.com', '123456', 'New York', 'design', 0, now()),('Will', 'Jackson', 'will@yahoo.com', '123456', 'Rhode Island', 'development', 1, now()),('Paula', 'Johnson', 'paula@yahoo.com', '123456', 'Massachusetts', 'sales', 0, now()),('Tom', 'Spears', 'tom@yahoo.com', '123456', 'Massachusetts', 'sales', 0, now());
+```
+
+
+
+
+
+
+
+
+
+
 
 La llave primaria, `Primary Key`, es el identificador único de los elementos dentro de una tabla. Los nombres o apellidos no deben ser utilizados como llave primaria porque pueden llegar a repetirse dentro de las columnas, en su lugar se debe de definir un id.
 

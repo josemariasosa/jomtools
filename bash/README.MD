@@ -295,3 +295,12 @@ if [ ! -d "$DIRECTORY" ]; then
   # Control will enter here if $DIRECTORY doesn't exist.
 fi
 ```
+
+
+### Grep
+
+When you want to avoid all python files in the tree notation.
+
+```bash
+tree -I venv . | grep --invert-match -E "__|cpython"
+```
