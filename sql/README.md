@@ -157,7 +157,7 @@ Este mismo proceso puede ser llevado a cabo desde **Preferencias del Sistema** e
 
 ## Introducción a SQL
 
-- Está basado en un modelo relacióanl de datos.
+- Está basado en un modelo relaciónal de datos.
 - Por lo general, todos los gestores de bases de datos utilizan SQL.
 - SQL utiliza tablas, con filas y columnas.
 - Las tablas se pueden relacionar entre ellas por medio de llaves.
@@ -362,7 +362,7 @@ Para crear una tabla nueva, debemos indicar:
 
 La llave primaria, `Primary Key`, es el identificador único de los elementos dentro de una tabla. Los nombres o apellidos no deben ser utilizados como llave primaria porque pueden llegar a repetirse dentro de las columnas, en su lugar se debe definir un id.
 
-Dentro de nuestra base de datos `frisdb` vamos a crear una tabla de usuarios que contenga la siguient información.
+Dentro de nuestra base de datos `fristdb` vamos a crear una tabla de usuarios que contenga la siguient información.
 
 ```sql
 CREATE TABLE users(
@@ -524,7 +524,7 @@ En la parte superior de los resultados podemos ver la opción `Export/Import`, p
 
 ```sql
 # Respuesta 1
-SELECT * FROM trips WHERE Edad_Usuario > 60;
+SELECT * FROM trips WHERE Edad_Usuario > 30;
 
 # Respuesta 2
 SELECT * FROM trips WHERE Hora_Retiro > '17:00:00' and Genero_Usuario = 'F';
