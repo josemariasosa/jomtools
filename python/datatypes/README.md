@@ -125,3 +125,67 @@ Generate a script in which the user give a product name and a quantity for that 
 
 ---
 
+
+### Epoch & Unix Timestamp Conversion Tools
+ 
+The current Unix epoch time is: `1574113549`.
+
+For more info, check: https://www.epochconverter.com/.
+
+
+#### How to get the current epoch time
+
+**Python:**
+
+```py
+    import time; time.time()
+```
+
+**Unix/Linux Shell:**
+
+```bash
+date +%s
+```
+
+#### Convert from human-readable date to epoch
+
+**Python:**
+
+```py
+import calendar, time
+calendar.timegm(time.strptime('2000-01-01 12:34:00', '%Y-%m-%d %H:%M:%S'))
+```
+
+**Unix/Linux Shell:**
+
+```bash
+date -d @1520000000
+```
+
+Replace 1520000000 with your epoch, needs recent version of 'date'. Replace '-d' with '-ud' for GMT/UTC time.
+
+#### Convert from epoch to human-readable date
+
+**Python:**
+
+```py
+import time
+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.localtime(epoch))
+```
+
+Replace `time.localtime` with `time.gmtime` for GMT time.
+
+Or using `datetime`:
+
+```py
+import datetime
+datetime.datetime.utcfromtimestamp(epoch).replace(tzinfo=datetime.timezone.utc)
+```
+
+**Unix/Linux Shell:**
+
+```sh
+date +%s -d"Jan 1, 1980 00:00:01"
+```
+
+Replace `-d` with `-ud` to input in GMT/UTC time.
