@@ -815,7 +815,7 @@ SELECT Genero_Usuario
 
 ## Operaciones matemáticas
 
-COUNT, SUM y AVG son **funciones** en MySQL que realizan algunos cálculos en un conjunto de valores y luego devuelve un solo valor.
+`COUNT`, `SUM`, `MAX`, `MIN` y `AVG` son **funciones** en MySQL que realizan algunos cálculos en un conjunto de valores y luego devuelve un solo valor.
 
 ### 1. COUNT, SUM y AVG
 
@@ -824,7 +824,8 @@ La función `SUM` calcula la suma de los valores presentes en una columna.
 Hay que calcular la edad promedio de los usuarios.
 
 ```sql
-SELECT SUM(Edad_Usuario) FROM trips;
+SELECT SUM(Edad_Usuario)
+  FROM trips;
 # +-------------------+
 # | sum(Edad_Usuario) |
 # +-------------------+
@@ -832,7 +833,8 @@ SELECT SUM(Edad_Usuario) FROM trips;
 # +-------------------+
 # 1 row in set (0.00 sec)
  
-SELECT SUM(Edad_Usuario)/1000 FROM trips;
+SELECT SUM(Edad_Usuario)/1000
+  FROM trips;
 # +------------------------+
 # | sum(Edad_Usuario)/1000 |
 # +------------------------+
@@ -901,18 +903,18 @@ La función `MAX` y `MIN` regresar el valor mayor y menor, respectivamente, de a
 ```sql
 # Respuesta 1
 SELECT COUNT(*) AS "cant_ciclistas_mujeres"
-FROM trips
-WHERE Fecha_Retiro LIKE '01%'
-AND Genero_Usuario = 'F';
+  FROM trips
+  WHERE Fecha_Retiro LIKE '01%'
+  AND Genero_Usuario = 'F';
 
 # Respuesta 2
 SELECT AVG(Edad_Usuario)
-FROM trips;
+  FROM trips;
 
 # Respuesta 3
 SELECT MAX(Edad_Usuario)
-FROM trips
-WHERE Fecha_Retiro LIKE '27%';
+  FROM trips
+  WHERE Fecha_Retiro LIKE '27%';
 ```
 
 ## Operadores comparativos
@@ -976,28 +978,28 @@ Los operadores comparativos son utilizados dentro de una operación `WHERE` para
 
 ```sql
 # Respuesta 1
-select trip_id, Edad_Usuario
-FROM trips
-where Edad_Usuario = (
-   SELECT min(Edad_Usuario)
-   FROM trips);
+SELECT trip_id, Edad_Usuario
+  FROM trips
+  WHERE Edad_Usuario = (
+    SELECT MIN(Edad_Usuario)
+      FROM trips);
 
 # Respuesta 2
-select trip_id
-FROM trips
-where Edad_Usuario = (
-   SELECT min(Edad_Usuario)
-   FROM trips);
+SELECT trip_id
+  FROM trips
+  WHERE Edad_Usuario = (
+    SELECT MIN(Edad_Usuario)
+      FROM trips);
 
 # Respuesta 3
 SELECT trip_id, Genero_Usuario, Edad_Usuario, Bici
-FROM trips
-WHERE trip_id IN (
-  SELECT trip_id
-    FROM trips
-    WHERE Edad_Usuario = (
-      SELECT min(Edad_Usuario)
-      FROM trips));
+  FROM trips
+  WHERE trip_id IN (
+    SELECT trip_id
+      FROM trips
+      WHERE Edad_Usuario = (
+        SELECT min(Edad_Usuario)
+        FROM trips));
 
 # Respuesta 5
 SELECT DISTINCT(
@@ -1214,7 +1216,7 @@ Asegurarse de incluir el comando `WHERE` cada vez que se va a realizar una opera
 DELETE FROM orders WHERE order_id = 1012;
 ```
 
-### 2 Actualizando columnas
+### 2. Actualizando columnas
 
 Es importante utilizar el comando `WHERE` si no queremos modificar el valor de todas las filas.
 
@@ -1222,7 +1224,7 @@ Es importante utilizar el comando `WHERE` si no queremos modificar el valor de t
 UPDATE orders SET quantity = 2 order_id = 1013;
 ```
 
-### 3 Insertando una nueva columna
+### 3. Insertando una nueva columna
 
 ```sql
 ALTER TABLE orders ADD site VARCHAR(15);
@@ -1230,7 +1232,7 @@ ALTER TABLE orders ADD site VARCHAR(15);
 
 Recordar que es posible utilizar el SQL Workbench directamente para modificar la información.
 
-### 4 Modificar el tipo de una columna
+### 4. Modificar el tipo de una columna
 
 ```sql
 ALTER TABLE users MODIFY COLUMN age INT(3);
