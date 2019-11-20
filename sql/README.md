@@ -758,12 +758,12 @@ SELECT * FROM users WHERE departamento IN ('diseño', 'ventas');
 
 1. Leer el siguiente query y decir qué va a regresar.
 
-   ```sql
-   SELECT *
-   FROM trips
-   WHERE Edad_Usuario NOT IN (50, 30, 20)
-   AND Bici IN (10643, 9648, 9929);
-   ```
+  ```sql
+  SELECT *
+    FROM trips
+    WHERE Edad_Usuario NOT IN (50, 30, 20)
+    AND Bici IN (10643, 9648, 9929);
+  ```
 
 2. Selecciona todos los viajes que tengan usuarios con edades de 10, 20 y 30.
 
@@ -780,41 +780,42 @@ SELECT * FROM users WHERE departamento IN ('diseño', 'ventas');
 ```sql
 # Respuesta 2
 SELECT *
-FROM trips
-WHERE Edad_Usuario in (10, 20, 30);
+  FROM trips
+  WHERE Edad_Usuario in (10, 20, 30);
 
 # Respuesta 3
 SELECT *
-FROM trips
-WHERE Edad_Usuario not in (35, 20, 18);
+  FROM trips
+  WHERE Edad_Usuario not in (35, 20, 18);
 
 # Respuesta 4
 SELECT *
-FROM trips
-WHERE Edad_Usuario IN (35, 20, 18)
-AND Bici IN (7486, 9299, 7552);
+  FROM trips
+  WHERE Edad_Usuario IN (35, 20, 18)
+  AND Bici IN (7486, 9299, 7552);
 
 # Respuesta 5
 SELECT *
-FROM trips
-WHERE Edad_Usuario NOT IN (50, 30, 20)
-AND Bici IN (10643, 9648, 9929);
+  FROM trips
+  WHERE Edad_Usuario NOT IN (50, 30, 20)
+  AND Bici IN (10643, 9648, 9929);
 
 # Respuesta 6
 SELECT Genero_Usuario, Edad_Usuario
-FROM trips
-WHERE Hora_Arribo like '12%';
+  FROM trips
+  WHERE Hora_Arribo like '12%';
 
 # Respuesta 7
 SELECT Genero_Usuario
-FROM trips
-WHERE Hora_Retiro like '19%'
-AND Edad_Usuario < 18;
+  FROM trips
+  WHERE Hora_Retiro like '19%'
+  AND Edad_Usuario < 18;
 ```
+---
 
 ## Operaciones matemáticas
 
-Existen funciones en MySQL que permiten realizar cálculos en un conjunto de valores, y luego, devuelve un solo valor.
+COUNT, SUM y AVG son **funciones** en MySQL que realizan algunos cálculos en un conjunto de valores y luego devuelve un solo valor.
 
 ### 1. COUNT, SUM y AVG
 
@@ -840,53 +841,52 @@ SELECT SUM(Edad_Usuario)/1000 FROM trips;
 # 1 row in set (0.00 sec)
 ```
 
-La función `AVG` nos regresa directamente el promedio, así nos ahorramos los pasos anteriores. Podemos utilizar la media para crear queries más completos.
+La función `AVG` nos regresa directamente el promedio, así nos ahorramos los pasos anteriores.
+
+**¿Cómo sería el código?**
+
+Podemos utilizar la media para crear queries más completos. Como por ejemplo, queremos hacer un query que nos regrese los viajes de todos los usuarios con edad mayor a la media.
 
 ```sql
 SELECT trip_id, Edad_Usuario
-FROM trips 
-WHERE Edad_Usuario > (
-SELECT AVG(Edad_Usuario)
-FROM trips);
+  FROM trips 
+  WHERE Edad_Usuario > (
+  SELECT AVG(Edad_Usuario)
+    FROM trips);
 ```
 
-La función `COUNT` devuelve el número de filas que coinciden con un criterio específico.
+La función `COUNT` devuelve el número de filas que coinciden con un criterio específico. Como por ejemplo, cuántos usuarios están por encima de la media, y cuántos por debajo.
+
+```sql
+# Por encima de la media
+SELECT COUNT(*)
+  FROM trips 
+  WHERE Edad_Usuario > (
+  SELECT AVG(Edad_Usuario)
+    FROM trips);
+
+# Por debajo de la media
+SELECT COUNT(*)
+  FROM trips 
+  WHERE Edad_Usuario < (
+  SELECT AVG(Edad_Usuario)
+    FROM trips);
+```
 
 #### Ejercicio
 
-1. Contar los usuarios que son mayores que la edad promedio.
-
-2. Qué porcentaje es.
+1. Calcular el porcentaje de usuarios, del total de 1000, que tienen una edad mayor o igual que el valor de la media.
 
 ```sql
 # Respuesta 1
-SELECT COUNT(*)
-FROM trips
-WHERE Edad_Usuario > (
-   SELECT AVG(Edad_Usuario)
-   FROM trips);
-# +----------+
-# | COUNT(*) |
-# +----------+
-# |      401 |
-# +----------+
-# 1 row in set (0.00 sec)
-
-# Respuesta 2
 SELECT COUNT(*) / 1000
 FROM trips
-WHERE Edad_Usuario > (
-   SELECT AVG(Edad_Usuario)
-   FROM trips);
-# +-----------------+
-# | COUNT(*) / 1000 |
-# +-----------------+
-# |          0.4010 |
-# +-----------------+
-# 1 row in set (0.00 sec)
+WHERE Edad_Usuario >= (
+  SELECT AVG(Edad_Usuario)
+    FROM trips);
 ```
 
-### 3.2 MAX y MIN
+### 2. MAX y MIN
 
 La función `MAX` y `MIN` regresar el valor mayor y menor, respectivamente, de alguna columna seleccionada.
 
@@ -894,49 +894,56 @@ La función `MAX` y `MIN` regresar el valor mayor y menor, respectivamente, de a
 
 1. ¿Cuántos ciclistas mujeres usaron ecobici el 1ero de Enero?
 
-2. ¿Cuántos ciclistas hombres usaron ecobici el 20 de Enero?
+2. ¿Cuál es el promedio de la edad de los ciclistas?
 
-3. ¿Cuál es el promedio de la edad de los ciclistas?
-
-4. ¿Cuántos años tenía el viajero más viejo el 27 de Enero?
-
-5. ¿Cuántos años tenía el viajero más joven el 15 de Enero?
+3. ¿Cuántos años tenía el viajero más viejo el 27 de Enero? 
 
 ```sql
 # Respuesta 1
-select COUNT(*) AS "cant_ciclistas_mujeres"
-from trips
-where Fecha_Retiro like '01%'
-and Genero_Usuario = 'F'
+SELECT COUNT(*) AS "cant_ciclistas_mujeres"
+FROM trips
+WHERE Fecha_Retiro LIKE '01%'
+AND Genero_Usuario = 'F';
 
 # Respuesta 2
-select COUNT(*) AS "cant_ciclistas_hombres"
-from trips
-where Fecha_Retiro like '20%'
-and Genero_Usuario = 'M'
+SELECT AVG(Edad_Usuario)
+FROM trips;
 
 # Respuesta 3
-select AVG(Edad_Usuario)
-from trips
-
-# Respuesta 4
-select MAX(Edad_Usuario)
-from trips
-where Fecha_Retiro like '27%'
-
-# Respuesta 5
-select MIN(Edad_Usuario)
-from trips
-where Fecha_Retiro like '15%'
+SELECT MAX(Edad_Usuario)
+FROM trips
+WHERE Fecha_Retiro LIKE '27%';
 ```
+
+## Operadores comparativos
+
+Los operadores comparativos son utilizados dentro de una operación `WHERE` para determinar los registos que se seleccionarán. Aquí una lista con los operadores comparativos utilizados en MySQL.
+
+| Operadores comparativos | Description                                                     |
+|-------------------------|-----------------------------------------------------------------|
+| =                       | Igual                                                           |
+| <=>                     | Igual (Seguro para comparar valores NULL)                       |
+| <>                      | Diferente                                                       |
+| !=                      | Diferente                                                       |
+| >                       | Mayor que                                                       |
+| >=                      | Mayor o igual que                                               |
+| <                       | Menor que                                                       |
+| <=                      | Menor o igual que                                               |
+| IN ( )                  | Encuentra valores de una lista                                  |
+| NOT                     | Niega una condición                                             |
+| BETWEEN                 | Dentro de un rango (inclusivo)                                  |
+| IS NULL                 | Valor NULL                                                      |
+| IS NOT NULL             | Valor no NULL                                                   |
+| LIKE                    | Encuentra patrones utilizando % y _                             |
+| EXISTS                  | Condición se cumple si el subquery regresa al menos una columna |
 
 ## Subconsultas
 
-- Las subconsultas en SQL es una consulta, dentro de otra consulta.
+- Las subconsultas en SQL son consultas, dentro de otra consulta.
 - Las subconsultas proporcionan datos a la consulta adjunta.
 - Las subconsultas pueden regresar:
-   - Listas
-   - Valores únicos
+  - Listas
+  - Valores únicos
 - Las subconsultas deben ir entre paréntesis.
 
 #### Ejercicio
@@ -950,22 +957,22 @@ where Fecha_Retiro like '15%'
 4. Mira el siguiente código y analiza qué respuesta puede arrojar.
 
   ```sql
-  SELECT DISTINCT(
-      (select COUNT(*)
-           from trips
-           where Fecha_Retiro like '01%'
-             and Genero_Usuario = 'M') / (select COUNT(*)
-                                          from trips
-                                          where Fecha_Retiro like '01%')
-      ) AS 'TOTAL'
+  SELECT DISTINCT((
+    SELECT COUNT(*)
+      FROM trips
+      WHERE Fecha_Retiro LIKE '01%'
+      AND Genero_Usuario = 'M') 
+    / (
+    SELECT COUNT(*)
+      FROM trips
+      WHERE Fecha_Retiro LIKE '01%'))
+    AS 'TOTAL'
   FROM trips;
   ```
 
 5. ¿Qué porcentaje de ciclistas fueron mujeres el 3 de Enero?
 
 6. ¿Qué porcentaje de ciclistas salen a las 5 de la mañana?
-
-7. ¿En la segunda mitad de Enero, cuantos viajes se hicieron y cuál fue la edad promedio de los ciclistas?
 
 ```sql
 # Respuesta 1
@@ -985,53 +992,42 @@ where Edad_Usuario = (
 # Respuesta 3
 SELECT trip_id, Genero_Usuario, Edad_Usuario, Bici
 FROM trips
-WHERE trip_id IN (SELECT trip_id
-  FROM trips
-  WHERE Edad_Usuario = (
-    SELECT min(Edad_Usuario)
-    FROM trips));
+WHERE trip_id IN (
+  SELECT trip_id
+    FROM trips
+    WHERE Edad_Usuario = (
+      SELECT min(Edad_Usuario)
+      FROM trips));
 
 # Respuesta 5
 SELECT DISTINCT(
-    (select COUNT(*)
-         from trips
-         where Fecha_Retiro like '01%'
-           and Genero_Usuario = 'F') / (select COUNT(*)
-                                        from trips
-                                        where Fecha_Retiro like '03%')
+  (SELECT COUNT(*)
+    FROM trips
+    WHERE Fecha_Retiro LIKE '01%'
+    AND Genero_Usuario = 'F') / (SELECT COUNT(*)
+                                  FROM trips
+                                  WHERE Fecha_Retiro like '03%')
     ) AS 'porc_ciclistas_mujeres'
 FROM trips;
 
 # Respuesta 6
 SELECT DISTINCT(
-    (select COUNT(*)
-         from trips
-         where Hora_Retiro like '5%') / (select COUNT(*)
-                                        from trips)
+  (SELECT COUNT(*)
+    FROM trips
+    WHERE Hora_Retiro LIKE '5%') / (SELECT COUNT(*)
+                                      FROM trips)
     ) AS 'porc_ciclistas_madrugaderos'
 FROM trips
-
-# Respuesta 7
-SELECT COUNT(*), AVG(Edad_Usuario)
-FROM (SELECT Genero_Usuario, Edad_Usuario
-      FROM trips
-      where Fecha_Retiro >= '15/01/2018') MITAD_MES
 ```
 
 ## Join
 
-Una cláusula `JOIN` se usa para combinar filas de dos o más tablas, en función de una columna relacionada entre ellas. Cuatro tipos de joins.
+Una cláusula `JOIN` se usa para combinar filas de dos o más tablas, en función de una columna relacionada entre ellas. Existen cuatro tipos de joins.
 
 - Inner join
-- Full join
+- Full join `* Not in MySQL`
 - Left join
 - Right join
-
-## Teoría de conjunto
-
-Unión
-Intersección
-Diferencia
 
 #### Ejercicio
 
@@ -1039,60 +1035,318 @@ Diferencia
 
 2. Crear una tabla nueva para cada elemento.
 
-3. Hacer un join para ver qué producto y cuánto cuesta de cada orden.
+3. Hacer un join para ver los productos y su precio dentro de cada orden.
+
+4. Insertar una columna con el total de la venta por cada orden (precio * cantidad).
+
+5. Qué pasa con los productos que están en la tabla de productos, pero no en las órdenes.
+
+6. Qué ocurre si utilizamos `RIGHT JOIN`.
 
 ```sql
+# Respuesta 2
 CREATE TABLE products(
-    product_id INT,
-    product_name VARCHAR(100),
-    price INT,
-    PRIMARY KEY(product_id)
+  product_id INT,
+  product_name VARCHAR(100),
+  price INT,
+  PRIMARY KEY(product_id)
 );
 
 CREATE TABLE orders(
-    order_id INT,
-    product_id INT,
-    quantity INT,
-    PRIMARY KEY(order_id),
-    FOREIGN KEY (product_id) REFERENCES products(product_id)
+  order_id INT,
+  product_id INT,
+  quantity INT,
+  PRIMARY KEY(order_id),
+  FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
-SELECT 
-  order_id AS o_id
-  product_id AS p_id
-  quantity AS q
-FROM orders
-LEFT JOIN products
-ON orders.product_id = products.product_id;
-
-Select order_id#, (quantity * price) as total
-from (SELECT *
+# Respuesta 3
+SELECT *
   FROM orders
-  LEFT JOIN products
-  ON orders.product_id = products.product_id) q;
+  LEFT JOIN products USING(product_id);
+
+# Respuesta 4
+SELECT product_id, order_id, quantity, product_name, price, (quantity*price) AS Total
+  FROM orders
+  LEFT JOIN products USING(product_id);
+
+# Respuesta 6
+SELECT *
+  FROM orders
+  RIGHT JOIN products USING(product_id);
 ```
-    
+
+#### Ejercicios Adicionales
+
+1. Utilizando [**reviewer**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/reviewer.csv) y [**rating**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/rating.csv). Escribe un query que encuentre los nombres únicos de los reviewers que hayan hecho evaluaciones mayores a 8.
+
+```sql
+SELECT DISTINCT(rev_name) AS reviewer
+  FROM reviewer
+  INNER JOIN rating USING(rev_id)
+  WHERE rev_stars >= 8;
+```
+
+2. Utilizando [**actor**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/actor.csv) y [**movie_cast**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/movie_cast.csv). Escribe un query que encuentre cuáles han sido los roles de Kevin Spacey.
+
+```sql
+SELECT act_fname, act_lname, role
+  FROM actor
+  LEFT JOIN movie_cast USING(act_id)
+  WHERE act_fname = 'Kevin'
+  AND act_lname = 'Spacey';
+```
+
+3. Utilizando [**actor**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/actor.csv), [**movie_cast**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/movie_cast.csv) y [**movie**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/movie.csv). Escribe un query que encuentre cuáles han sido los roles y las películas de Kevin Spacey.
+
+```sql
+SELECT act_fname, act_lname, role, mov_title
+  FROM actor
+  LEFT JOIN movie_cast USING(act_id)
+  LEFT JOIN movie USING(mov_id)
+  WHERE act_fname = 'Kevin'
+  AND act_lname = 'Spacey';
+```
+
+4. Utilizando [**actor**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/actor.csv), [**movie_cast**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/movie_cast.csv) y [**movie**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/movie.csv). Escribe un query que regrese la lista con el primer y segundo nombre de todos los actores que estuvieron en la película `Annie Hall`, junto con los roles que tuvieron.
+
+```sql
+SELECT act_fname,act_lname,role
+  FROM actor
+  LEFT JOIN movie_cast USING(act_id)
+  LEFT JOIN movie USING(mov_id)
+  WHERE mov_title = 'Annie Hall';
+```
+
+5. Utilizando [**actor**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/actor.csv), [**movie_cast**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/movie_cast.csv) y [**movie**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/movie.csv). Escribe un query que enliste todos los actores que no tuvieron participación en ninguna película entre 1990 y 2000.
+
+```sql
+SELECT act_fname, act_lname, mov_title, mov_year
+  FROM actor
+  LEFT JOIN movie_cast USING(act_id)
+  LEFT JOIN movie USING(mov_id)
+  WHERE mov_year NOT BETWEEN 1990 and 2000;
+```
+
+6. Utilizando [**movie**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/movie.csv) y [**rating**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/rating.csv). Escribe un query que encuentre todos los años en que se produjo un película que recibió un rating de 3 o 4, ordenar los resultados de manera incremental.
+
+```sql
+SELECT DISTINCT(mov_year)
+  FROM movie
+  LEFT JOIN rating USING(mov_id)
+  WHERE rev_stars IN (3, 4)
+  ORDER BY mov_year;
+```
+
+## Teoría de conjuntos
+
+Unión
+Intersección `* Not in MySQL`
+Diferencia `* Not in MySQL`
+
+#### Ejercicio
+
+1. Cómo podríamos regresar todas las órdenes con una cantidad de 2 y 5. Ahora utilizando el comando de `UNION`.
+
+```sql
+# Sin unión
+SELECT *
+  FROM orders
+  WHERE quantity IN (2, 5);
+
+# Con unión
+SELECT *
+  FROM orders
+  WHERE quantity = 2
+  UNION
+  SELECT *
+    FROM trips
+    WHERE quantity = 5;
+```
+
+#### Ejercicios Adicionales
+
+1. Utilizando [**nobel_win**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/nobel_win.csv). Escribe un query para conocer el ganador del premio Nobel de 1971 en literatura.
+
+```sql
+SELECT winner
+  FROM nobel_win
+  WHERE year = 1971
+  AND subject = 'Literature';
+```
+
+2. Utilizando [**nobel_win**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/nobel_win.csv). Escribe un query que regrese los detalles de los ganadores con un primer nombre Louis.
+
+```sql
+SELECT *
+  FROM nobel_win 
+  WHERE winner LIKE 'Louis%';
+```
+
+3. Utilizando [**nobel_win**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/nobel_win.csv). Escribe un query que regrese los ganadores del premio Nobel del año 1970 excepto Pysiology y Economics.
+
+```sql
+SELECT *
+  FROM nobel_win
+  WHERE year = 1970
+  AND SUBJECT NOT IN ('Physiology', 'Economics');
+```
+
+4. Utilizando [**nobel_win**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/nobel_win.csv). Escribe un query que muestre los ganadores en Physiology en años menores a 1971 y los ganadores del precio de paz después del 1974.
+
+```sql
+SELECT * 
+  FROM nobel_win
+  WHERE (subject ='Physiology' AND year < 1971)
+  UNION (
+    SELECT *
+      FROM nobel_win
+      WHERE (subject ='Peace' AND year >= 1974));
+```
+
+## Más operaciones en tablas
+
+### 1. Eliminando filas
+
+Asegurarse de incluir el comando `WHERE` cada vez que se va a realizar una operación como esta. Sino podríamos correr el riesgo de eliminar todos los registros de una sola vez.
+
+```sql
+DELETE FROM orders WHERE order_id = 1012;
+```
+
+### 2 Actualizando columnas
+
+Es importante utilizar el comando `WHERE` si no queremos modificar el valor de todas las filas.
+
+```sql
+UPDATE orders SET quantity = 2 order_id = 1013;
+```
+
+### 3 Insertando una nueva columna
+
+```sql
+ALTER TABLE orders ADD site VARCHAR(15);
+```
+
+Recordar que es posible utilizar el SQL Workbench directamente para modificar la información.
+
+### 4 Modificar el tipo de una columna
+
+```sql
+ALTER TABLE users MODIFY COLUMN age INT(3);
+```
+
+## Los índices de una tabla
+
+Los índices son utilizados en las columnas y en las tablas para acelerar los queries y encontrar información de manera más rápida y efectiva. Las llaves primarias, **Primary keys**, como el id de la orden, `order_id`, son índices, sin embargo nosotros podemos definir nuestros propios índices también. 
+
+Se recomienda utilizar índices en todos los campos por los cuales se han de realizar múltiples búsquedas.
+
+```sql
+CREATE INDEX ProdIndex On products(product_name);
+DROP INDEX ProdIndex ON products;
+```
+
+### Ejercicios Finales
+
+Los recursos para estos ejercicios se encuentran en los archivos csv listados a continuación.
+
+- [**actor**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/actor.csv)
+- [**customer**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/customer.csv)
+- [**item_mast**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/item_mast.csv)
+- [**movie**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/movie.csv)
+- [**movie_cast**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/movie_cast.csv)
+- [**nobel_win**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/nobel_win.csv)
+- [**rating**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/rating.csv)
+- [**reviewer**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/reviewer.csv)
+- [**sales_orders**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/sales_orders.csv)
+- [**salesman**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/salesman.csv)
 
 
+1. Utilizando [**salesman**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/salesman.csv). Escribe un query que regrese los nombres y las ciudades de los vendedores de Paris.
 
+```sql
+SELECT name, city
+  FROM salesman
+  WHERE city='Paris';
+```
 
+2. Utilizando [**sales_orders**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/sales_orders.csv). Escribe un query que regrese la información del id de todos los vendedores que han obtenido órdenes de algún cliente, sin ningún repetido.
 
+```sql
+SELECT DISTINCT salesman_id
+  FROM sales_orders;
+```
 
+3. Utilizando [**item_mast**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/item_mast.csv). Escribe un query que calcule el precio promedio de los productos manufacturados con el código 16.
 
+```sql
+SELECT AVG(pro_price)
+  FROM item_mast 
+  WHERE pro_com=16;
+```
 
+4. Utilizando [**item_mast**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/item_mast.csv). Escribe un query que muestre el nombre y el precio de todos los productos con un precio igual o mayor que 25. La lista debe de contener el precio más alto primero, y luego, ordenar el nombre de manera ascendente.
 
+```sql
+SELECT pro_name, pro_price 
+  FROM item_mast
+  WHERE pro_price >= 250
+  ORDER BY pro_price DESC, pro_name;
+```
 
+5. Utilizando [**item_mast**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/item_mast.csv). Escribe un query que muestre el precio promedio de los items de cada compañía, mostrando solo el código de la compañía.
 
+```sql
+SELECT AVG(pro_price) AS ave_price, pro_com
+  FROM item_mast
+  GROUP BY pro_com;
+```
 
+6. Utilizando [**item_mast**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/item_mast.csv). Escribir un query que muestre los nombres y el precio de los productos más baratos.
 
+```sql
+SELECT pro_name, pro_price
+  FROM item_mast
+  WHERE pro_price = (
+    SELECT MIN(pro_price)
+      FROM item_mast);
+```
 
+7. Utilizando [**customer**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/customer.csv) y [**salesman**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/salesman.csv). Escribe un query que regrese una lista con el nombre del vendedor, del usuario, y la ciudad para el vendedor y cliente que pertenece a la misma ciudad.
 
+```sql
+SELECT name AS 'Salesman', cust_name, city
+  FROM salesman
+  INNER JOIN customer USING(city);
+```
 
+8. Utilizando [**sales_orders**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/sales_orders.csv) y [**customer**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/customer.csv). Escribe un query que regrese una lista con el número de orden, la cantidad comprada, el nombre del cliente, y la ciudad para aquellas órdenes en donde el total se encuentre entre 500 y 2000.
 
+```sql
+SELECT ord_no, purch_amt, cust_name, city
+  FROM sales_orders
+  LEFT JOIN customer USING(customer_id)
+  WHERE purch_amt BETWEEN 500 AND 2000;
+```
 
+9. Utilizando [**customer**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/customer.csv) y [**salesman**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/salesman.csv). Escribe un query para conocer qué vendedor está trabajando con qué cliente.
 
+```sql
+SELECT a.cust_name AS "Customer Name", a.city, b.name AS "Salesman", b.commission
+  FROM customer AS a
+  INNER JOIN salesman AS b USING(salesman_id);
+```
 
+10. Utilizando [**sales_orders**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/sales_orders.csv), [**salesman**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/salesman.csv) y [**customer**](https://github.com/josemariasosa/jomtools-data/blob/master/sql/exercises/2-multi/customer.csv). Escribe un query que encuentre los detalles de la orden (numero de orden, fecha, cantidad, cliente, vendedor)
 
+```sql
+SELECT a.ord_no,a.ord_date,a.purch_amt, b.cust_name AS "Customer Name", b.grade, c.name AS "Salesman", c.commission 
+  FROM sales_orders AS a 
+  INNER JOIN customer AS b USING(customer_id)
+  INNER JOIN salesman AS c 
+  ON a.salesman_id=c.salesman_id;
+```
 
 ---
 
