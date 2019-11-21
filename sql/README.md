@@ -1002,15 +1002,11 @@ SELECT trip_id, Genero_Usuario, Edad_Usuario, Bici
         FROM trips));
 
 # Respuesta 5
-SELECT DISTINCT(
-  (SELECT COUNT(*)
-    FROM trips
-    WHERE Fecha_Retiro LIKE '01%'
-    AND Genero_Usuario = 'F') / (SELECT COUNT(*)
-                                  FROM trips
-                                  WHERE Fecha_Retiro like '03%')
-    ) AS 'porc_ciclistas_mujeres'
-FROM trips;
+SELECT count(*) FROM trips WHERE Genero_Usuario = 'F' AND Fecha_Retiro LIKE '01%'
+SELECT count(*) FROM trips WHERE Fecha_Retiro LIKE '01%'
+
+SELECT (SELECT count(*) FROM trips WHERE Genero_Usuario = 'F' AND Fecha_Retiro LIKE '01%') / (SELECT count(*) FROM trips WHERE Fecha_Retiro LIKE '01%') AS 'porcentaje';
+
 
 # Respuesta 6
 SELECT DISTINCT(
