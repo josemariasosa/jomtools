@@ -226,3 +226,26 @@ steps = range(0, self.length, self.STEP_SIZE)
 db.stuff.find_one({'name': re.compile(username, re.IGNORECASE)})
 ```
 
+
+
+## Get the last date of activity.
+
+Using an aggregate command to return the last activity, the max date, for every user in the company.
+
+```js
+db.getCollection('AuditLog').aggregate([
+    {
+        $match: {
+            'company_id': '5ab123ga3gsdef000f565dc2',
+            'user_id': '5ab325028838ef000f565kol'
+        }
+    },
+    {
+        $group: {
+            _id: "$user_id",
+            lastActivity: { $max: "$loggedAt" }
+        }
+    }
+])
+```
+
