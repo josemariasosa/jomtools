@@ -7,6 +7,15 @@ https://www.forbes.com/sites/gilpress/2016/03/23/data-preparation-most-time-cons
 
 https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf
 
+## Shortcuts:
+
+The **assignment** operator:
+
+`option` + `-` = `<-`
+
+The **pipe** operator:
+`control` + `shift` + `m` = `%>%`
+
 ## Messing around
 
 In order to create a data.frame from scratch we can call the `data.frame()` function and give a name to each column.
@@ -18,16 +27,16 @@ df <- data.frame(
   price = c(500, 99, 120, 6))
 ```
 
-Answer the following questions:
+Answer the following questions using the latter dataset:
 
-- How can we see a list of the products?
+- How can we see the list of products?
 - How can we multiply `18.99` to the price? (const * n)
 - How can we save the latter results in a new column?
 - How can we multiply the price and the quantity to get the total? (n * n)
 - How can we convert the product to the data.frame index? And vice versa?
-- How can you rename the `total` column as `TOTAL`?
-- What's the difference between a vectorized function and an atomic function?
-
+- How can we rename the `total` column as `TOTAL`?
+- How can we calculate the total of the TOTAL?
+- What's the difference between a **vectorized** function and a **scalar** function?
 
 ```R
 df$pesos = 18.99 * df$price
@@ -146,6 +155,8 @@ storms3 <- storms2 %>%
 
 ## Preparing our data
 
+### 1. Select command
+
 With the function `select()` from the `dplyr` library we can choose, remove or rearrange the columns from our dataset.
 
 **Choose** some columns:
@@ -182,16 +193,301 @@ A list of useful **select** functions.
 
 ![](images/select_fun.png?raw=true)
 
-What happens if we convert the `mtcars` dataset into a table of the `dplyr` library?
-
-```R
-cars <- tbl_df(mtcars)
-print(cars)
-```
-
+### 2. Filter command
 
 We saw how to select columns from a dataset, but now let's figure how to **filter** specific rows in our dataset.
 
+```R
+mtcars %>% 
+  filter(mpg > 20, carb == 4)
+
+#   mpg cyl disp  hp drat    wt  qsec vs am gear carb
+# 1  21   6  160 110  3.9 2.620 16.46  0  1    4    4
+# 2  21   6  160 110  3.9 2.875 17.02  0  1    4    4
+```
+
+Every argument in the `filter()` function is a **logical test**, and must be `TRUE` in order to return the row. But if we would like to use the `OR` statement instead we should specify it with `|`.
+
+```R
+mtcars %>% 
+  filter(mpg > 20 | carb == 4) %>%
+  head
+
+#    mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+# 1 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+# 2 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+# 3 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+# 4 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+# 5 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+# 6 24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+```
+
+More about logical tests:
+
+```R
+# Generate a random sample.
+x = sample(-1:13, 10)
+y = sample(-1:13, 10)
+
+# Vectorized tests.
+x > 0 & y > 0
+x > 0 | y > 0
+
+# Scalar tests.
+all(x > 0)
+any(x == y)
+
+# The %in% statement.
+1 %in% c(2, 2, 4, 7)
+
+# The not statement.
+!(1 %in% c(2, 2, 4, 7))
+```
+
+All the **comparison** and **logical** statements are listed in the next table.
+
+![](images/comparison.png?raw=true)
+
+How can we make sure to return the vehicle names?
+
+```R
+cars = mtcars
+if (!('vehicle_names' %in% names(cars))) {
+  cars$vehicle_names = rownames(mtcars)
+  rownames(cars) <- NULL
+}
+
+cars %>% 
+  select(vehicle_names, mpg, carb, cyl, wt) %>% 
+  filter(mpg > 20, carb == 4)
+
+#   vehicle_names mpg carb cyl    wt
+# 1     Mazda RX4  21    4   6 2.620
+# 2 Mazda RX4 Wag  21    4   6 2.875
+```
+
+### 3. Mutate command
+
+Now that we selected the required columns and rows, we are going to learn how to generate new columns with our data. Imagine we would like to use kilometers per liter instead of mpg, to get this results the mpg must be divided by `2.353`.
+
+```R
+cars %>% 
+  select(vehicle_names, mpg, carb, cyl, wt) %>% 
+  filter(mpg > 20 | carb == 4) %>% 
+  mutate(kpl = mpg / 2.353, round_kpl = round(kpl, 2)) %>% 
+  head
+
+#    vehicle_names  mpg carb cyl    wt       kpl round_kpl
+# 1      Mazda RX4 21.0    4   6 2.620  8.924777      8.92
+# 2  Mazda RX4 Wag 21.0    4   6 2.875  8.924777      8.92
+# 3     Datsun 710 22.8    1   4 2.320  9.689758      9.69
+# 4 Hornet 4 Drive 21.4    1   6 3.215  9.094773      9.09
+# 5     Duster 360 14.3    4   8 3.570  6.077348      6.08
+# 6      Merc 240D 24.4    2   4 3.190 10.369741     10.37
+```
+
+### 4. Group_by and summarize commands
+
+The **group_by** and **summarize** commands are a very useful combination that help us get insights of our data.
+
+Let's imagine we would like to get the average fuel consumption by cylinders, to test the hypothesis that more cylinders equals more consumption.
+
+```R
+cars %>% 
+  select(vehicle_names, mpg, cyl) %>% 
+  group_by(cyl) %>% 
+  summarise(mean = mean(mpg), n = n(), deviation = sd(mpg))
+
+# # A tibble: 3 x 4
+#     cyl  mean     n deviation
+#   <dbl> <dbl> <int>     <dbl>
+# 1     4  26.7    11      4.51
+# 2     6  19.7     7      1.45
+# 3     8  15.1    14      2.56
+```
+
+More functions to use inside the summarize command:
+
+![](images/summarize.png?raw=true)
+
+What if we would like to get the average fuel consumption by the vehicle make (i.e. Mazda, Toyota, etc.)?
+
+We need to extract that information from the `vehicle_names` column. The first step is to do a list of steps. What would you do? What **assumptions** we need?
+
+```R
+get_make = function(s) {
+  make = strsplit(s, ' ')[[1]][1]
+  return(make)
+}
+
+cars$make = sapply(cars$vehicle_names, get_make)
+cars %>% 
+  select(make, mpg) %>% 
+  group_by(make) %>% 
+  summarise(mean = mean(mpg), n = n(), deviation = sd(mpg)) %>% 
+  arrange(desc(mean)) %>% 
+  head
+
+# # A tibble: 6 x 4
+#   make     mean     n deviation
+#   <chr>   <dbl> <int>     <dbl>
+# 1 Honda    30.4     1     NA   
+# 2 Lotus    30.4     1     NA   
+# 3 Fiat     29.8     2      3.61
+# 4 Toyota   27.7     2      8.77
+# 5 Porsche  26       1     NA   
+# 6 Datsun   22.8     1     NA  
+```
+
+Lastly, we can **sort** the data.frame results using the `arrange()` function. As default, the arrange order is ascending so in order to do the opposite, in a descending way, we need to specify it with the `desc()` function.
+
+## Combining multiple sources of data
+
+The easiest way to combine two datasets is using the `bind_cols()` function of the `dplyr` library.
+
+![](images/bind_cols.png?raw=true)
+
+```R
+library(dplyr)
+
+y <- data.frame(
+  x1 = c('A', 'B', 'C'),
+  x2 = c(1,2,3)
+)
+
+z <- data.frame(
+  x1 = c('B', 'C', 'D'),
+  x2 = c(4,3,9)
+)
+
+bind_cols(y, z)
+
+#   x1 x2 x11 x21
+# 1  A  1   B   4
+# 2  B  2   C   3
+# 3  C  3   D   9
+```
+
+You can also use `bind_rows()`.
+
+![](images/bind_rows.png?raw=true)
+
+```R
+bind_rows(y, z)
+
+#   x1 x2
+# 1  A  1
+# 2  B  2
+# 3  C  3
+# 4  B  4
+# 5  C  3
+# 6  D  9
+```
+
+However, the last 2 combining methods are not very good ones. Instead, if you want to combine the data of two datasets a better way is to use one of the following four joining method from the `dplyr` library.
+
+- **Left join**: Join matching rows from b to a.
+- **Right join**: Join matching rows from a to b.
+- **Inner join**: Join data. Retain only rows in both sets.
+- **Full join**: Join data. Retain all values, all rows.
+
+```R
+a = data.frame(
+  x1 = c('A', 'B', 'C'),
+  x2 = c(1,2,3)
+)
+print(a)
+
+#   x1 x2
+# 1  A  1
+# 2  B  2
+# 3  C  3
+
+b = data.frame(
+  x1 = c('A', 'B', 'D'),
+  x3 = c(T, F, T)
+)
+print(b)
+
+#   x1    x3
+# 1  A  TRUE
+# 2  B FALSE
+# 3  D  TRUE
+
+left_join(a, b, by = "x1")
+
+#   x1 x2    x3
+# 1  A  1  TRUE
+# 2  B  2 FALSE
+# 3  C  3    NA
+
+right_join(a, b, by = "x1")
+
+#   x1 x2    x3
+# 1  A  1  TRUE
+# 2  B  2 FALSE
+# 3  D NA  TRUE
+
+inner_join(a, b, by = "x1")
+
+#   x1 x2    x3
+# 1  A  1  TRUE
+# 2  B  2 FALSE
+
+full_join(a, b, by = "x1")
+
+#   x1 x2    x3
+# 1  A  1  TRUE
+# 2  B  2 FALSE
+# 3  C  3    NA
+# 4  D NA  TRUE
+```
+
+**EXERCISE**
+
+1. Import the *"extended_mtcars.csv"* dataset and join it with the `cars` data.frame we build.
+
+
+```R
+extended_mtcars <- read.csv("~/extended_mtcars.csv", stringsAsFactors=FALSE)
+
+names(extended_mtcars)[names(extended_mtcars) == 'model'] <- 'vehicle_names'
+
+left_join(cars, extended_mtcars, by='vehicle_names')
+
+
+get_number = function(s) {
+  if (is.na(s)) {
+    return(NA)
+  } else {
+    res = c()
+    for (i in strsplit(s, "")[[1]]) {
+      if (i %in% c("1","2","3","4","5","6","7","8","9","0",".")) {
+        res = c(res, i)
+      } else {
+        break
+      }
+    }
+    res = paste(res, collapse = '')
+    res = as.numeric(res)
+    return(res)
+  }
+}
+
+get_units = function(s) {
+  if (is.na(s)) {
+    return(NA)
+  } else {
+    s = strsplit(s, "")[[1]]
+    s = tail(s, 3)
+    s = paste(s, collapse = '')
+    s = tolower(s)
+    return(s)
+  }
+}
+sapply(results$real_consumption, get_number)
+sapply(results$real_consumption, get_units)
+```
 
 
 
@@ -204,11 +500,11 @@ We saw how to select columns from a dataset, but now let's figure how to **filte
 
 
 
-shortcuts:
 
-option + '-' = <-
 
-control + shift + 'm' = %>%
+
+
+
 
 ## Packages
 
@@ -332,39 +628,7 @@ df <- data.frame(
 
 
 
-> x1 <- c('A', 'B', 'C')
-> x2 <- c(1,2,3)
-> a <- data.frame(x1,x2)
-> a
-  x1 x2
-1  A  1
-2  B  2
-3  C  3
 
-
-
-> x1 <- c('A', 'B', 'D')
-> x3 <- c(T,F,T)
-> b <- data.frame(x1,x3)
-> b
-  x1    x3
-1  A  TRUE
-2  B FALSE
-3  D  TRUE
-
-
-library(dplyr)
-
-
-> 'A' %in% a$x1
-[1] TRUE
-
-
-> left_join(a, b, by='x1')
-  x1 x2    x3
-1  A  1  TRUE
-2  B  2 FALSE
-3  C  3    NA
 
 iris %>% # Datos que usare
   group_by(Species) %>% # Variable de agrupacion
