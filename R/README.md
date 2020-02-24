@@ -447,15 +447,137 @@ full_join(a, b, by = "x1")
 
 1. Import the *"extended_mtcars.csv"* dataset and join it with the `cars` data.frame we build.
 
-
 ```R
 extended_mtcars <- read.csv("~/extended_mtcars.csv", stringsAsFactors=FALSE)
 
 names(extended_mtcars)[names(extended_mtcars) == 'model'] <- 'vehicle_names'
 
-left_join(cars, extended_mtcars, by='vehicle_names')
+results = left_join(cars, extended_mtcars, by='vehicle_names')
+```
+
+## The apply and sapply functions
+
+Did you notice something weird with the `extended_mtcars`?
+
+The apply function helps us to run any kind of complicated transformation in our data using any function we want.
+
+The `sapply()` function helps us generate a new column using the data of a **single column** of our data.frame. And the `apply()` function helps us generate a new column using the data of **all the columns** of our data.frame.
+
+**EXAMPLE**
+
+We ran four different tests in four different users, and this were the results:
+
+```R
+test_results = data.frame(
+  test_id = c(1,2,3,4),
+  user_id = c(100, 102, 104, 106),
+  measurement = c(.98, .50, .82, .80)
+)
+```
+
+We need to insert a new column with the results interpretation. Imagine that for measurements above `0.9` the interpretation is `perfect!` and for measurements bellow that the interpretation is just `good!`.
+
+For this scenario, where we have only 2 different interpretations, we can use the vectorized function `ifelse()`.
+
+```R
+test_results$interpretation = ifelse(test_results$measurement > 0.9, "perfect", "good!")
+
+print(test_results)
+#   test_id user_id measurement interpretation
+# 1       1     100        0.98        perfect
+# 2       2     102        0.50          good!
+# 3       3     104        0.82          good!
+# 4       4     106        0.80          good!
+```
+
+This results looks great, but then, we realize that only measurements above `0.8` can be interpreted as `good!`, the rest must be interpreted as `can do better!`.
+
+This is a good example of where we can use the `sapply()` function. But first, let's create our own function capable of generating the correct interpretation.
+
+```R
+get_test_results = function(n) {
+  if (n > .9) {
+    return("perfect!")
+  } else if (n > .8) {
+    return("good!")
+  } else {
+    return("can do better!")
+  }
+}
+```
+
+This function is capable of processing any results, so now let's run this function on each element of the measurement column. In order to do that, we will use **sapply**.
+
+```R
+test_results$interpretation = sapply(test_results$measurement, get_test_results)
+
+print(test_results)
+#   test_id user_id measurement interpretation
+# 1       1     100        0.98       perfect!
+# 2       2     102        0.50 can do better!
+# 3       3     104        0.82          good!
+# 4       4     106        0.80 can do better!
+```
+
+Perfect! But now, we realize that we used the same **scoring guide** for all the tests and this is not quite right.
+
+Each test has a type, and each type have its own scoring guide. Here is the additional information.
+
+```R
+test_type = data.frame(
+  test_id = c(1,2,3,4,5,6),
+  type = c("A", "B", "C", "A", "B", "C")
+)
+
+scoring_guide = data.frame(
+  type = c("A", "B", "C"),
+  min = c(.8, .6, .65),
+  max = c(.9, .85, .75)
+)
+```
+
+Help me figuring out what type and scoring guide applies for our test results.
+
+```R
+test_results$interpretation <- NULL
+test_results = left_join(test_results, test_type, by='test_id')
+test_results = left_join(test_results, scoring_guide, by='type')
+
+print(test_results)
+#   test_id user_id measurement type  min  max
+# 1       1     100        0.98    A 0.80 0.90
+# 2       2     102        0.50    B 0.60 0.85
+# 3       3     104        0.82    C 0.65 0.75
+# 4       4     106        0.80    A 0.80 0.90
+```
+
+Now we have all the information we need to define the correct interpretation, however, the `sapply()` function is no longer useful because we need the information of more than column. We'll need **apply**.
+
+![](images/apply.png?raw=true)
+
+```R
+get_full_test_results = function(row) {
+  if (row["measurement"] > row["max"]) {
+    return("perfect!")
+  } else if (row["measurement"] > row["min"]) {
+    return("good!")
+  } else {
+    return("can do better!")
+  }
+}
+
+test_results$interpretation = apply(test_results, 1, get_full_test_results)
+
+print(test_results)
+#   test_id user_id measurement type  min  max interpretation
+# 1       1     100        0.98    A 0.80 0.90       perfect!
+# 2       2     102        0.50    B 0.60 0.85 can do better!
+# 3       3     104        0.82    C 0.65 0.75       perfect!
+# 4       4     106        0.80    A 0.80 0.90 can do better!
+```
 
 
+```R
 get_number = function(s) {
   if (is.na(s)) {
     return(NA)
@@ -490,6 +612,7 @@ sapply(results$real_consumption, get_units)
 ```
 
 
+Now, what to do with the NA.
 
 
 
