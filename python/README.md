@@ -569,3 +569,44 @@ Arguments = 1, 2, 3
 SumOf(*Arguments)
 (*) operator will unpack the arguments to multiple parameters.
 ```
+
+
+## Obtaining arguments from bash in python
+
+From bash, run:
+
+```bash
+(venv)$ python main.py test=stress
+```
+
+Get the keyword arguments as a dictionary.
+
+```python
+#!/usr/bin/env python
+# coding=utf-8
+
+# Only for Data Testing. | Rever inc
+# ------------------------------------------------------------------------------
+
+import sys
+
+from controller.analytics import OnGetAnalytics
+
+def main():
+    i = OnGetAnalytics('mq')
+    i.start('channel', 'method', 'props', 'body')
+
+
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        kwargs = {
+            arg.split('=')[0]:arg.split('=')[1]
+            for arg in sys.argv[1:] if '=' in arg
+        }
+
+    print(kwargs)
+    exit()
+    main()
+```
+

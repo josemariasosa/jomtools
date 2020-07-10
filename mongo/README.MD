@@ -249,3 +249,24 @@ db.getCollection('AuditLog').aggregate([
 ])
 ```
 
+## Counting the aggregate results.
+
+2. Group and Count example
+Group by “source”, and count the total number of “source”.
+
+```js
+> db.whois_range.aggregate([
+        {"$group" : {_id:"$source", count:{$sum:1}}}
+    ])
+```
+
+```txt
+{ "_id" : "RIPE", "count" : 29270 }
+{ "_id" : "AFRINIC", "count" : 1326 }
+{ "_id" : "KRNIC", "count" : 105 }
+{ "_id" : "LACNIC", "count" : 5889 }
+{ "_id" : "APNIC", "count" : 6644 }
+{ "_id" : "JPNIC", "count" : 167 }
+{ "_id" : "ARIN", "count" : 25429 }
+```
+

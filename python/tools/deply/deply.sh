@@ -18,7 +18,7 @@ if [ ! -d "$PROJECT_LOC" ]; then
     python3 -m venv venv
     source venv/bin/activate
     pip install --upgrade pip
-    pip install pymongo pandas configparser
+    pip install pymongo pandas configparser psycopg2-binary dnspython
     pip install git+https://github.com/josemariasosa/rubik
     deactivate
     cp $BASH_MAIN ./main.sh
