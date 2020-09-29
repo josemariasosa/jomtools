@@ -91,3 +91,13 @@ From this table to
 | 3       | 1                      | 3                  |                      | 2                             |
 | 5       |                        |                    | 4                    | 3                             |
 
+
+# Working with Dates
+
+The first line convert a pd.Series into DateTime format. The last line, remove the tz.awareness from a DateTime Series.
+
+```py
+df['col_name'] = pd.to_datetime(df['col_name'], utc=True, errors='coerce')
+df['col_name'] = df['col_name'].dt.tz_localize(None)
+```
+
