@@ -121,3 +121,5 @@ if ! shopt -oq posix; then
   fi
 fi
 
+alias t='tree . -I "__pycache__|venv|__init__.py"'
+
